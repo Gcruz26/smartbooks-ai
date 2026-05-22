@@ -40,10 +40,10 @@ export function AIInsightCard({ insights }: { insights: FinancialInsight[] }) {
           <Sparkles className="h-5 w-5" />
         </span>
         <div>
-          <h3 className="font-display text-lg font-bold text-navy-900 dark:text-white">
+          <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
             AI Financial Insights
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-base text-slate-500 dark:text-slate-400">
             Generated from your latest activity
           </p>
         </div>

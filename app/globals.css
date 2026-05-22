@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  /* Page background and dark text from the user-supplied spec. */
+  /* Page background and dark text from the brand spec. */
   --background: #F8FAFC;
   --foreground: #0F172A;
 
@@ -23,17 +23,17 @@
   --foreground: #E8EDF7;
 }
 
-/* Bump the base font size for presentation-friendly typography while
-   keeping Tailwind's relative type scale intact. 17px on mobile, 18px
-   on tablet+, 19px on large screens. */
+/* Presentation-friendly type scale. 18px on mobile, 19px on tablet,
+   20px on large screens. Tailwind's text-* classes are rem-based, so the
+   whole UI scales up proportionally. */
 html {
-  font-size: 17px;
+  font-size: 18px;
 }
 @media (min-width: 640px) {
-  html { font-size: 18px; }
+  html { font-size: 19px; }
 }
 @media (min-width: 1280px) {
-  html { font-size: 19px; }
+  html { font-size: 20px; }
 }
 
 * {
@@ -50,7 +50,7 @@ body {
   color: var(--foreground);
 }
 
-/* Scrollbar tuned to the new blue brand. */
+/* Scrollbar tuned to the brand. */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -73,7 +73,7 @@ body {
   background-clip: padding-box;
 }
 
-/* Subtle dotted grid background utility, retuned for the new blue. */
+/* Subtle dotted grid background utility. */
 .bg-grid {
   background-image: radial-gradient(circle, rgba(30, 58, 138, 0.06) 1px, transparent 1px);
   background-size: 22px 22px;

@@ -21,18 +21,17 @@ import {
 import { formatCompactCurrency, formatCurrency } from "@/lib/utils";
 import type { MonthlyReportRow, CategoryBreakdown } from "@/lib/types";
 
-// Brand-aligned palette: blue primary, orange secondary, alternating shades.
 const PIE_COLORS = [
-  "#1E3A8A", // Main Blue
-  "#E6A57E", // Accent Orange
-  "#3970D6", // mid blue
-  "#F4C7A8", // Soft Orange
-  "#152C68", // deep blue
-  "#D38563", // deeper orange
-  "#93BAF6", // light blue
-  "#FADFC4", // very light orange
-  "#2447B0", // navy hover
-  "#0F1B47", // deepest blue
+  "#1E3A8A",
+  "#E6A57E",
+  "#3970D6",
+  "#F4C7A8",
+  "#152C68",
+  "#D38563",
+  "#93BAF6",
+  "#FADFC4",
+  "#2447B0",
+  "#0F1B47",
 ];
 
 interface TooltipPayloadItem {
@@ -51,9 +50,11 @@ interface CurrencyTooltipProps {
 function CurrencyTooltip({ active, payload, label }: CurrencyTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs shadow-lg dark:border-navy-700 dark:bg-navy-900">
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm shadow-lg dark:border-navy-700 dark:bg-navy-900">
       {label !== undefined && label !== "" && (
-        <p className="mb-1 font-semibold text-navy-900 dark:text-white">{label}</p>
+        <p className="mb-1.5 text-base font-semibold text-navy-900 dark:text-white">
+          {label}
+        </p>
       )}
       {payload.map((p, idx) => (
         <p
@@ -61,7 +62,7 @@ function CurrencyTooltip({ active, payload, label }: CurrencyTooltipProps) {
           className="flex items-center gap-2 text-slate-600 dark:text-slate-300"
         >
           <span
-            className="inline-block h-2.5 w-2.5 rounded-full"
+            className="inline-block h-3 w-3 rounded-full"
             style={{ backgroundColor: p.color || p.fill }}
           />
           <span className="capitalize">{p.name}:</span>
@@ -74,18 +75,20 @@ function CurrencyTooltip({ active, payload, label }: CurrencyTooltipProps) {
   );
 }
 
+const axisTick = { fontSize: 14, fill: "#64748B" } as const;
+
 /** Monthly revenue area chart. */
 export function RevenueChart({ data }: { data: MonthlyReportRow[] }) {
   if (data.length === 0) {
     return (
-      <div className="flex h-[280px] items-center justify-center text-sm text-slate-400 dark:text-slate-500">
+      <div className="flex h-[280px] items-center justify-center text-base text-slate-400 dark:text-slate-500">
         No revenue data yet.
       </div>
     );
   }
   return (
     <ResponsiveContainer width="100%" height={280}>
-      <AreaChart data={data} margin={{ top: 10, right: 8, left: -8, bottom: 0 }}>
+      <AreaChart data={data} margin={{ top: 10, right: 8, left: -4, bottom: 0 }}>
         <defs>
           <linearGradient id="incomeFill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#1E3A8A" stopOpacity={0.35} />
@@ -95,12 +98,12 @@ export function RevenueChart({ data }: { data: MonthlyReportRow[] }) {
         <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
         <XAxis
           dataKey="month"
-          tick={{ fontSize: 12, fill: "#64748B" }}
+          tick={axisTick}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: "#64748B" }}
+          tick={axisTick}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v) => formatCompactCurrency(v)}
@@ -123,23 +126,23 @@ export function RevenueChart({ data }: { data: MonthlyReportRow[] }) {
 export function IncomeExpenseChart({ data }: { data: MonthlyReportRow[] }) {
   if (data.length === 0) {
     return (
-      <div className="flex h-[300px] items-center justify-center text-sm text-slate-400 dark:text-slate-500">
+      <div className="flex h-[300px] items-center justify-center text-base text-slate-400 dark:text-slate-500">
         No comparison data yet.
       </div>
     );
   }
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} margin={{ top: 10, right: 8, left: -8, bottom: 0 }}>
+      <BarChart data={data} margin={{ top: 10, right: 8, left: -4, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
         <XAxis
           dataKey="month"
-          tick={{ fontSize: 12, fill: "#64748B" }}
+          tick={axisTick}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: "#64748B" }}
+          tick={axisTick}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v) => formatCompactCurrency(v)}
@@ -149,7 +152,7 @@ export function IncomeExpenseChart({ data }: { data: MonthlyReportRow[] }) {
           cursor={{ fill: "rgba(30,58,138,0.05)" }}
         />
         <Legend
-          wrapperStyle={{ fontSize: 13, paddingTop: 8 }}
+          wrapperStyle={{ fontSize: 15, paddingTop: 10 }}
           iconType="circle"
         />
         <Bar
@@ -157,14 +160,14 @@ export function IncomeExpenseChart({ data }: { data: MonthlyReportRow[] }) {
           name="Income"
           fill="#1E3A8A"
           radius={[6, 6, 0, 0]}
-          maxBarSize={28}
+          maxBarSize={32}
         />
         <Bar
           dataKey="expenses"
           name="Expenses"
           fill="#E6A57E"
           radius={[6, 6, 0, 0]}
-          maxBarSize={28}
+          maxBarSize={32}
         />
       </BarChart>
     </ResponsiveContainer>
@@ -175,22 +178,22 @@ export function IncomeExpenseChart({ data }: { data: MonthlyReportRow[] }) {
 export function CategoryChart({ data }: { data: CategoryBreakdown[] }) {
   if (data.length === 0) {
     return (
-      <div className="flex h-[280px] items-center justify-center text-sm text-slate-400 dark:text-slate-500">
+      <div className="flex h-[280px] items-center justify-center text-base text-slate-400 dark:text-slate-500">
         No expense data to display yet.
       </div>
     );
   }
 
   return (
-    <ResponsiveContainer width="100%" height={280}>
+    <ResponsiveContainer width="100%" height={300}>
       <PieChart>
         <Pie
           data={data}
           dataKey="amount"
           nameKey="category"
           cx="50%"
-          cy="50%"
-          innerRadius={58}
+          cy="42%"
+          innerRadius={56}
           outerRadius={92}
           paddingAngle={2}
           stroke="none"
@@ -204,7 +207,7 @@ export function CategoryChart({ data }: { data: CategoryBreakdown[] }) {
           layout="horizontal"
           align="center"
           verticalAlign="bottom"
-          wrapperStyle={{ fontSize: 12, paddingTop: 12 }}
+          wrapperStyle={{ fontSize: 14, paddingTop: 16 }}
           iconType="circle"
         />
       </PieChart>

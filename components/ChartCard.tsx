@@ -26,7 +26,7 @@ export function ChartCard({
     >
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-display text-lg font-bold text-navy-900 dark:text-white">
+          <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
             {title}
           </h3>
           {subtitle && (

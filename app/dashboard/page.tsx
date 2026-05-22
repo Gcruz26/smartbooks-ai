@@ -23,7 +23,6 @@ import { Button } from "@/components/ui/Button";
 import {
   transactions as allTransactions,
   receipts as allReceipts,
-  business as currentBusiness,
 } from "@/lib/mockData";
 import { generateFinancialInsights } from "@/lib/insights";
 import {
@@ -53,7 +52,6 @@ const QUICK_PRESETS: QuickPreset[] = [
   { key: "all", label: "All Data" },
 ];
 
-/** Compute the comparable previous-period bounds for a given range. */
 function previousPeriodBounds(
   start: string | undefined,
   end: string | undefined
@@ -71,7 +69,6 @@ function previousPeriodBounds(
   };
 }
 
-/** Format a +X.X% / -X.X% delta string, or null when not comparable. */
 function pctDelta(
   current: number,
   previous: number
@@ -127,8 +124,7 @@ export default function DashboardPage() {
     [appliedStart, appliedEnd]
   );
   const filteredReceipts = useMemo(
-    () =>
-      filterReceiptsByDateRange(allReceipts, appliedStart, appliedEnd),
+    () => filterReceiptsByDateRange(allReceipts, appliedStart, appliedEnd),
     [appliedStart, appliedEnd]
   );
 
@@ -234,11 +230,11 @@ export default function DashboardPage() {
   return (
     <DashboardShell
       title="Dashboard"
-      subtitle={`Here's how ${currentBusiness.name} is doing in the selected period`}
+      subtitle="Monitor your business performance for the selected period."
     >
       {/* Header strip: viewing label + quick actions */}
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-navy-700 ring-1 ring-slate-200 dark:bg-navy-900 dark:text-slate-200 dark:ring-navy-800">
+        <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-base font-medium text-navy-700 ring-1 ring-slate-200 dark:bg-navy-900 dark:text-slate-200 dark:ring-navy-800">
           <Eye className="h-4 w-4 text-sky-500" />
           <span className="text-slate-500 dark:text-slate-400">Viewing:</span>
           <span className="font-semibold text-navy-900 dark:text-white">
@@ -261,12 +257,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Compact filter card */}
-      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-card dark:border-navy-800 dark:bg-navy-900 sm:px-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          {/* Segmented quick-period pills */}
-          <div className="-mx-1 overflow-x-auto pb-1 lg:mx-0 lg:pb-0">
-            <div className="inline-flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-navy-800">
+      {/* Filter card - two full-width rows for breathing room */}
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-card dark:border-navy-800 dark:bg-navy-900">
+        {/* Row 1: segmented quick-period pills (full width, scrolls if too narrow) */}
+        <div className="border-b border-slate-100 px-4 py-3 dark:border-navy-800 sm:px-5">
+          <div className="-mx-1 overflow-x-auto pb-1">
+            <div className="inline-flex min-w-max gap-1 rounded-xl bg-slate-100 p-1 dark:bg-navy-800">
               {QUICK_PRESETS.map((p) => {
                 const active = activePreset === p.key;
                 return (
@@ -275,7 +271,7 @@ export default function DashboardPage() {
                     type="button"
                     onClick={() => handlePreset(p.key)}
                     className={cn(
-                      "whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-semibold transition",
+                      "whitespace-nowrap rounded-lg px-4 py-2.5 text-base font-semibold transition",
                       active
                         ? "bg-white text-navy-900 shadow-sm dark:bg-navy-700 dark:text-white"
                         : "text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white"
@@ -287,67 +283,85 @@ export default function DashboardPage() {
               })}
             </div>
           </div>
+        </div>
 
-          {/* Custom date range controls */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
-            <input
-              id="dash-start"
-              type="date"
-              aria-label="Start date"
-              value={pendingStart}
-              min={dataMin}
-              max={dataMax}
-              onChange={(e) => setPendingStart(e.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100 sm:w-40"
-            />
-            <span
-              aria-hidden
-              className="hidden text-sm text-slate-400 sm:inline"
-            >
-              -
-            </span>
-            <input
-              id="dash-end"
-              type="date"
-              aria-label="End date"
-              value={pendingEnd}
-              min={dataMin}
-              max={dataMax}
-              onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100 sm:w-40"
-            />
-            <div className="flex gap-2">
+        {/* Row 2: custom date range + actions */}
+        <div className="px-4 py-3 sm:px-5">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center lg:max-w-md">
+              <div>
+                <label
+                  htmlFor="dash-start"
+                  className="mb-2 block text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400"
+                >
+                  Start Date
+                </label>
+                <input
+                  id="dash-start"
+                  type="date"
+                  value={pendingStart}
+                  min={dataMin}
+                  max={dataMax}
+                  onChange={(e) => setPendingStart(e.target.value)}
+                  className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-base text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100"
+                />
+              </div>
+              <span
+                aria-hidden
+                className="hidden self-end pb-2.5 text-sm text-slate-400 sm:inline"
+              >
+                -
+              </span>
+              <div>
+                <label
+                  htmlFor="dash-end"
+                  className="mb-2 block text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400"
+                >
+                  End Date
+                </label>
+                <input
+                  id="dash-end"
+                  type="date"
+                  value={pendingEnd}
+                  min={dataMin}
+                  max={dataMax}
+                  onChange={(e) => setPendingEnd(e.target.value)}
+                  className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-base text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 lg:self-end">
               <button
                 type="button"
                 onClick={handleClear}
-                className="h-10 rounded-lg border border-slate-200 px-3.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-navy-900 dark:border-navy-700 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white"
+                className="h-12 rounded-lg border border-slate-200 px-5 text-base font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-navy-900 dark:border-navy-700 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white"
               >
                 Clear
               </button>
               <button
                 type="button"
                 onClick={handleApply}
-                className="h-10 rounded-lg bg-navy-800 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-700 dark:bg-sky-500 dark:hover:bg-sky-600"
+                className="h-12 rounded-lg bg-navy-800 px-6 text-base font-semibold text-white shadow-sm transition hover:bg-navy-700"
               >
-                Apply
+                Apply Filter
               </button>
             </div>
           </div>
-        </div>
 
-        {filterError && (
-          <div
-            role="alert"
-            className="mt-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
-          >
-            <AlertTriangle className="h-4 w-4 shrink-0" />
-            {filterError}
-          </div>
-        )}
+          {filterError && (
+            <div
+              role="alert"
+              className="mt-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
+            >
+              <AlertTriangle className="h-4 w-4 shrink-0" />
+              {filterError}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Stat cards */}
-      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total Income"
           value={formatCurrency(summary.totalIncome)}
@@ -386,7 +400,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
+      <div className="mt-7 grid gap-6 lg:grid-cols-3">
         <ChartCard
           title="Monthly Revenue"
           subtitle={periodLabel}
@@ -408,14 +422,14 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent transactions + AI insights */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
+      <div className="mt-7 grid gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white shadow-card dark:border-navy-800 dark:bg-navy-900 lg:col-span-2">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5 dark:border-navy-800">
             <div>
               <h3 className="font-display text-lg font-bold text-navy-900 dark:text-white">
                 Recent Transactions
               </h3>
-              <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-base text-slate-500 dark:text-slate-400">
                 Showing {recent.length} of {filteredTransactions.length} in this period
               </p>
             </div>

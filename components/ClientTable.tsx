@@ -23,15 +23,15 @@ export function ClientTable({ clients }: { clients: Client[] }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[800px] text-base">
+      <table className="w-full min-w-[800px] text-lg">
         <thead>
-          <tr className="border-b border-slate-200 text-left text-sm font-semibold uppercase tracking-wide text-slate-500 dark:border-navy-800 dark:text-slate-400">
-            <th className="px-5 py-4">Client</th>
-            <th className="px-5 py-4">Contact</th>
-            <th className="px-5 py-4">Business Type</th>
-            <th className="px-5 py-4 text-right">Total Billed</th>
-            <th className="px-5 py-4 text-right">Outstanding</th>
-            <th className="px-5 py-4">Status</th>
+          <tr className="border-b border-slate-200 text-left text-base font-semibold uppercase tracking-wide text-slate-500 dark:border-navy-800 dark:text-slate-400">
+            <th className="px-5 py-5">Client</th>
+            <th className="px-5 py-5">Contact</th>
+            <th className="px-5 py-5">Business Type</th>
+            <th className="px-5 py-5 text-right">Total Billed</th>
+            <th className="px-5 py-5 text-right">Outstanding</th>
+            <th className="px-5 py-5">Status</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 dark:divide-navy-800">
@@ -40,7 +40,7 @@ export function ClientTable({ clients }: { clients: Client[] }) {
               key={c.id}
               className="transition hover:bg-slate-50 dark:hover:bg-navy-800/50"
             >
-              <td className="px-5 py-4">
+              <td className="px-5 py-5">
                 <div className="flex items-center gap-3.5">
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-navy-800 text-sm font-semibold text-white">
                     {c.name
@@ -54,7 +54,7 @@ export function ClientTable({ clients }: { clients: Client[] }) {
                   </span>
                 </div>
               </td>
-              <td className="px-5 py-4">
+              <td className="px-5 py-5">
                 <div className="space-y-1 text-slate-500 dark:text-slate-400">
                   <p className="flex items-center gap-1.5 text-sm">
                     <Mail className="h-4 w-4" /> {c.email}
@@ -64,15 +64,15 @@ export function ClientTable({ clients }: { clients: Client[] }) {
                   </p>
                 </div>
               </td>
-              <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+              <td className="px-5 py-5 text-slate-600 dark:text-slate-300">
                 {c.businessType}
               </td>
-              <td className="px-5 py-4 text-right font-mono font-semibold text-navy-900 dark:text-white">
+              <td className="px-5 py-5 text-right font-mono font-semibold text-navy-900 dark:text-white">
                 {formatCurrency(c.totalBilled)}
               </td>
               <td
                 className={cn(
-                  "px-5 py-4 text-right font-mono font-semibold",
+                  "px-5 py-5 text-right font-mono font-semibold",
                   c.outstandingBalance > 0
                     ? "text-red-600 dark:text-red-400"
                     : "text-slate-400"
@@ -80,7 +80,7 @@ export function ClientTable({ clients }: { clients: Client[] }) {
               >
                 {formatCurrency(c.outstandingBalance)}
               </td>
-              <td className="px-5 py-4">
+              <td className="px-5 py-5">
                 <Badge tone={statusToTone(c.status)}>
                   {statusLabel(c.status)}
                 </Badge>

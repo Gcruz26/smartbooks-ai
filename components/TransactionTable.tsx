@@ -31,17 +31,17 @@ export function TransactionTable({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[720px] text-base">
+      <table className="w-full min-w-[720px] text-lg">
         <thead>
-          <tr className="border-b border-slate-200 text-left text-sm font-semibold uppercase tracking-wide text-slate-500 dark:border-navy-800 dark:text-slate-400">
-            <th className="px-5 py-4 font-semibold">Description</th>
-            {!compact && <th className="px-5 py-4 font-semibold">Category</th>}
-            <th className="px-5 py-4 font-semibold">Date</th>
+          <tr className="border-b border-slate-200 text-left text-base font-semibold uppercase tracking-wide text-slate-500 dark:border-navy-800 dark:text-slate-400">
+            <th className="px-5 py-5 font-semibold">Description</th>
+            {!compact && <th className="px-5 py-5 font-semibold">Category</th>}
+            <th className="px-5 py-5 font-semibold">Date</th>
             {!compact && (
-              <th className="px-5 py-4 font-semibold">Method</th>
+              <th className="px-5 py-5 font-semibold">Method</th>
             )}
-            <th className="px-5 py-4 font-semibold">Status</th>
-            <th className="px-5 py-4 text-right font-semibold">Amount</th>
+            <th className="px-5 py-5 font-semibold">Status</th>
+            <th className="px-5 py-5 text-right font-semibold">Amount</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 dark:divide-navy-800">
@@ -52,7 +52,7 @@ export function TransactionTable({
                 key={t.id}
                 className="transition hover:bg-slate-50 dark:hover:bg-navy-800/50"
               >
-                <td className="px-5 py-4">
+                <td className="px-5 py-5">
                   <div className="flex items-center gap-3.5">
                     <span
                       className={cn(
@@ -81,26 +81,26 @@ export function TransactionTable({
                   </div>
                 </td>
                 {!compact && (
-                  <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+                  <td className="px-5 py-5 text-slate-600 dark:text-slate-300">
                     {t.category}
                   </td>
                 )}
-                <td className="px-5 py-4 text-slate-500 dark:text-slate-400">
+                <td className="px-5 py-5 text-slate-500 dark:text-slate-400">
                   {formatDate(t.date)}
                 </td>
                 {!compact && (
-                  <td className="px-5 py-4 text-slate-500 dark:text-slate-400">
+                  <td className="px-5 py-5 text-slate-500 dark:text-slate-400">
                     {t.paymentMethod}
                   </td>
                 )}
-                <td className="px-5 py-4">
+                <td className="px-5 py-5">
                   <Badge tone={statusToTone(t.status)}>
                     {statusLabel(t.status)}
                   </Badge>
                 </td>
                 <td
                   className={cn(
-                    "px-5 py-4 text-right font-mono font-semibold",
+                    "px-5 py-5 text-right font-mono font-semibold",
                     isIncome
                       ? "text-emerald-600 dark:text-emerald-400"
                       : "text-navy-900 dark:text-white"

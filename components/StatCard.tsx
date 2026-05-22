@@ -30,22 +30,23 @@ export function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className="group flex h-full min-h-[10rem] animate-fade-up flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-card-hover dark:border-navy-800 dark:bg-navy-900 dark:hover:border-sky-500/30"
+      className="group flex h-full min-h-[12rem] animate-fade-up flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-card-hover dark:border-navy-800 dark:bg-navy-900 dark:hover:border-sky-500/30"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-center justify-between">
         <div
           className={cn(
-            "grid h-11 w-11 place-items-center rounded-xl transition-transform group-hover:scale-105",
+            "grid h-13 w-13 place-items-center rounded-xl transition-transform group-hover:scale-105",
             accents[accent]
           )}
+          style={{ height: "3.25rem", width: "3.25rem" }}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className="h-6 w-6" />
         </div>
         {trend && (
           <span
             className={cn(
-              "inline-flex items-center gap-0.5 rounded-full px-2.5 py-1 text-sm font-semibold",
+              "inline-flex items-center gap-0.5 rounded-full px-3 py-1 text-base font-semibold",
               trend.positive
                 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
                 : "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300"
@@ -60,11 +61,11 @@ export function StatCard({
           </span>
         )}
       </div>
-      <div className="mt-4">
-        <p className="text-sm font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+      <div className="mt-5">
+        <p className="text-base font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
           {label}
         </p>
-        <p className="mt-1.5 font-display text-3xl font-bold leading-tight tracking-tight text-navy-900 dark:text-white">
+        <p className="mt-2 font-display text-4xl font-bold leading-tight tracking-tight text-navy-900 dark:text-white">
           {value}
         </p>
       </div>
