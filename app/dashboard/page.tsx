@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/Button";
 import {
   transactions as allTransactions,
   receipts as allReceipts,
+  business as currentBusiness,
 } from "@/lib/mockData";
 import { generateFinancialInsights } from "@/lib/insights";
 import {
@@ -233,7 +234,7 @@ export default function DashboardPage() {
   return (
     <DashboardShell
       title="Dashboard"
-      subtitle="Here's how Green Cafe is doing in the selected period"
+      subtitle={`Here's how ${currentBusiness.name} is doing in the selected period`}
     >
       {/* Header strip: viewing label + quick actions */}
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">

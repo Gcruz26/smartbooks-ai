@@ -11,7 +11,14 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  role: "owner" | "accountant" | "staff";
+  /**
+   * Free-form role label, e.g. "Owner", "Accountant",
+   * "Student / Business Owner". Kept as a string so the demo profile
+   * can describe richer identities than the original three-value enum.
+   */
+  role: string;
+  /** Optional institution / school name. */
+  institution?: string;
 }
 
 export interface Business {
@@ -22,6 +29,8 @@ export interface Business {
   taxId: string;
   currency: string;
   language: string;
+  /** Optional institution / school the business is associated with. */
+  institution?: string;
   notifications: {
     taxReminders: boolean;
     weeklySummary: boolean;
@@ -51,7 +60,7 @@ export interface Receipt {
   category: string;
   classification: string; // suggested accounting classification
   status: ReceiptStatus;
-  confidenceScore: number; // 0–100
+  confidenceScore: number; // 0-100
   uploadedAt: string;
 }
 

@@ -11,21 +11,31 @@ import type {
   MonthlyReportRow,
 } from "./types";
 
+// ---------------------------------------------------------------------------
+// Demo user + business profile
+//
+// This is the single source of truth for the signed-in user and the business
+// shown in the app (Login demo button, Header, Sidebar, Settings page, etc.).
+// To change the demo identity, edit only the values below.
+// ---------------------------------------------------------------------------
+
 export const currentUser: User = {
   id: "u_001",
   name: "Gilda Cruz",
-  email: "gcruz@greencafe.cv",
-  role: "owner",
+  email: "sv25.0091@iscee.edu.cv",
+  role: "Student / Business Owner",
+  institution: "ISCEE",
 };
 
 export const business: Business = {
   id: "b_001",
-  name: "Green Cafe",
+  name: "SmartBooks AI",
   ownerName: "Gilda Cruz",
-  email: "gcruz@greencafe.cv",
+  email: "sv25.0091@iscee.edu.cv",
   taxId: "CV-284917365",
   currency: "USD",
   language: "English",
+  institution: "ISCEE",
   notifications: {
     taxReminders: true,
     weeklySummary: true,
@@ -33,6 +43,12 @@ export const business: Business = {
     productUpdates: false,
   },
 };
+
+/**
+ * Password used by the mock demo-login button.
+ * Real authentication is intentionally not wired up.
+ */
+export const demoPassword = "demo1234";
 
 export const incomeCategories = [
   "Sales Revenue",

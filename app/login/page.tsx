@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Sparkles, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { currentUser, demoPassword } from "@/lib/mockData";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,8 +22,8 @@ export default function LoginPage() {
   }
 
   function handleDemo() {
-    setEmail("gcruz@greencafe.cv");
-    setPassword("demo1234");
+    setEmail(currentUser.email);
+    setPassword(demoPassword);
     setLoading(true);
     setTimeout(() => router.push("/dashboard"), 700);
   }
