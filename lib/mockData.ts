@@ -13,10 +13,6 @@ import type {
 
 // ---------------------------------------------------------------------------
 // Demo user + business profile
-//
-// This is the single source of truth for the signed-in user and the business
-// shown in the app (Login demo button, Header, Sidebar, Settings page, etc.).
-// To change the demo identity, edit only the values below.
 // ---------------------------------------------------------------------------
 
 export const currentUser: User = {
@@ -44,10 +40,6 @@ export const business: Business = {
   },
 };
 
-/**
- * Password used by the mock demo-login button.
- * Real authentication is intentionally not wired up.
- */
 export const demoPassword = "demo1234";
 
 export const incomeCategories = [
@@ -78,64 +70,83 @@ export const paymentMethods = [
   "Check",
 ];
 
+// ---------------------------------------------------------------------------
+// Transactions (every row carries a documentType)
+// ---------------------------------------------------------------------------
+
 export const transactions: Transaction[] = [
   // May 2026
-  { id: "t_101", date: "2026-05-18", type: "income", category: "Sales Revenue", description: "Daily coffee & pastry sales", amount: 1240.5, paymentMethod: "Cash", status: "paid", client: "Walk-in" },
-  { id: "t_102", date: "2026-05-17", type: "income", category: "Service Revenue", description: "Catering - corporate breakfast", amount: 680.0, paymentMethod: "Bank Transfer", status: "paid", client: "Island Taxi Services" },
-  { id: "t_103", date: "2026-05-16", type: "expense", category: "Office Supplies", description: "Cups, napkins, takeaway boxes", amount: 145.75, paymentMethod: "Credit Card", status: "paid" },
-  { id: "t_104", date: "2026-05-15", type: "expense", category: "Marketing", description: "Instagram ad campaign", amount: 320.0, paymentMethod: "Credit Card", status: "paid" },
-  { id: "t_105", date: "2026-05-14", type: "income", category: "Sales Revenue", description: "Weekend market stall", amount: 890.25, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
-  { id: "t_106", date: "2026-05-12", type: "expense", category: "Utilities", description: "Electricity & water", amount: 410.4, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_107", date: "2026-05-10", type: "expense", category: "Rent", description: "Cafe space - May rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_108", date: "2026-05-09", type: "expense", category: "Salaries", description: "Part-time barista wages", amount: 1450.0, paymentMethod: "Bank Transfer", status: "pending" },
-  { id: "t_109", date: "2026-05-08", type: "income", category: "Consulting Income", description: "Menu design consulting", amount: 450.0, paymentMethod: "Bank Transfer", status: "pending", client: "Mindelo Beauty Salon" },
-  { id: "t_110", date: "2026-05-06", type: "expense", category: "Software", description: "SmartBooks AI Pro subscription", amount: 19.99, paymentMethod: "Credit Card", status: "paid" },
-  { id: "t_111", date: "2026-05-05", type: "expense", category: "Transport", description: "Supplier delivery fuel", amount: 88.6, paymentMethod: "Cash", status: "paid" },
-  { id: "t_112", date: "2026-05-03", type: "income", category: "Sales Revenue", description: "Daily coffee & pastry sales", amount: 1105.0, paymentMethod: "Cash", status: "paid", client: "Walk-in" },
-  { id: "t_113", date: "2026-05-02", type: "expense", category: "Bank Fees", description: "Monthly account maintenance", amount: 12.5, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_114", date: "2026-05-01", type: "expense", category: "Marketing", description: "Local newspaper feature", amount: 150.0, paymentMethod: "Credit Card", status: "overdue" },
+  { id: "t_101", date: "2026-05-18", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "Daily coffee & pastry sales", amount: 1240.5, paymentMethod: "Cash", status: "paid", client: "Walk-in" },
+  { id: "t_102", date: "2026-05-17", type: "income", documentType: "invoice", category: "Service Revenue", description: "Catering - corporate breakfast", amount: 680.0, paymentMethod: "Bank Transfer", status: "paid", client: "Island Taxi Services" },
+  { id: "t_103", date: "2026-05-16", type: "expense", documentType: "invoice", category: "Office Supplies", description: "Cups, napkins, takeaway boxes", amount: 145.75, paymentMethod: "Credit Card", status: "paid" },
+  { id: "t_104", date: "2026-05-15", type: "expense", documentType: "invoice", category: "Marketing", description: "Instagram ad campaign", amount: 320.0, paymentMethod: "Credit Card", status: "paid" },
+  { id: "t_105", date: "2026-05-14", type: "income", documentType: "receipt", category: "Sales Revenue", description: "Weekend market stall", amount: 890.25, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
+  { id: "t_106", date: "2026-05-12", type: "expense", documentType: "invoice", category: "Utilities", description: "Electricity & water", amount: 410.4, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_107", date: "2026-05-10", type: "expense", documentType: "invoice", category: "Rent", description: "Office space - May rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_108", date: "2026-05-09", type: "payroll", documentType: "receipt", category: "Salaries", description: "Part-time staff wages", amount: 1450.0, paymentMethod: "Bank Transfer", status: "pending" },
+  { id: "t_109", date: "2026-05-08", type: "income", documentType: "invoice", category: "Consulting Income", description: "Menu design consulting", amount: 450.0, paymentMethod: "Bank Transfer", status: "pending", client: "Mindelo Beauty Salon" },
+  { id: "t_110", date: "2026-05-06", type: "expense", documentType: "invoice_receipt", category: "Software", description: "SmartBooks AI Pro subscription", amount: 19.99, paymentMethod: "Credit Card", status: "paid" },
+  { id: "t_111", date: "2026-05-05", type: "expense", documentType: "receipt", category: "Transport", description: "Supplier delivery fuel", amount: 88.6, paymentMethod: "Cash", status: "paid" },
+  { id: "t_112", date: "2026-05-03", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "Daily coffee & pastry sales", amount: 1105.0, paymentMethod: "Cash", status: "paid", client: "Walk-in" },
+  { id: "t_113", date: "2026-05-02", type: "bank_fee", documentType: "receipt", category: "Bank Fees", description: "Monthly account maintenance", amount: 12.5, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_114", date: "2026-05-01", type: "expense", documentType: "invoice", category: "Marketing", description: "Local newspaper feature", amount: 150.0, paymentMethod: "Credit Card", status: "overdue" },
+  { id: "t_115", date: "2026-05-19", type: "income", documentType: "debit_note", category: "Service Revenue", description: "Late-delivery surcharge billed to client", amount: 75.0, paymentMethod: "Bank Transfer", status: "paid", client: "Island Taxi Services" },
+  { id: "t_116", date: "2026-05-20", type: "expense", documentType: "credit_note", category: "Office Supplies", description: "Credit for returned printer cartridges", amount: 45.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_117", date: "2026-05-21", type: "owner_contribution", documentType: "receipt", category: "Other Income", description: "Owner capital injection", amount: 2000.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_118", date: "2026-05-22", type: "transfer", documentType: "receipt", category: "Miscellaneous", description: "Transfer to savings account", amount: 500.0, paymentMethod: "Bank Transfer", status: "paid" },
 
   // April 2026
-  { id: "t_201", date: "2026-04-28", type: "income", category: "Sales Revenue", description: "End of month sales", amount: 2310.75, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
-  { id: "t_202", date: "2026-04-25", type: "expense", category: "Salaries", description: "Staff wages", amount: 1450.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_203", date: "2026-04-20", type: "expense", category: "Rent", description: "Cafe space - April rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_204", date: "2026-04-18", type: "income", category: "Service Revenue", description: "Private event catering", amount: 1320.0, paymentMethod: "Bank Transfer", status: "paid", client: "Local Market Store" },
-  { id: "t_205", date: "2026-04-12", type: "expense", category: "Utilities", description: "Electricity & water", amount: 388.2, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_206", date: "2026-04-08", type: "expense", category: "Marketing", description: "Flyer printing", amount: 95.0, paymentMethod: "Cash", status: "paid" },
-  { id: "t_207", date: "2026-04-05", type: "income", category: "Sales Revenue", description: "Weekly sales", amount: 1980.0, paymentMethod: "Cash", status: "paid", client: "Walk-in" },
+  { id: "t_201", date: "2026-04-28", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "End of month sales", amount: 2310.75, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
+  { id: "t_202", date: "2026-04-25", type: "payroll", documentType: "receipt", category: "Salaries", description: "Staff wages", amount: 1450.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_203", date: "2026-04-20", type: "expense", documentType: "invoice", category: "Rent", description: "Office space - April rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_204", date: "2026-04-18", type: "income", documentType: "invoice", category: "Service Revenue", description: "Private event catering", amount: 1320.0, paymentMethod: "Bank Transfer", status: "paid", client: "Local Market Store" },
+  { id: "t_205", date: "2026-04-12", type: "expense", documentType: "invoice", category: "Utilities", description: "Electricity & water", amount: 388.2, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_206", date: "2026-04-08", type: "expense", documentType: "receipt", category: "Marketing", description: "Flyer printing", amount: 95.0, paymentMethod: "Cash", status: "paid" },
+  { id: "t_207", date: "2026-04-05", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "Weekly sales", amount: 1980.0, paymentMethod: "Cash", status: "paid", client: "Walk-in" },
+  { id: "t_208", date: "2026-04-15", type: "income", documentType: "credit_note", category: "Service Revenue", description: "Credit issued for cancelled event", amount: 120.0, paymentMethod: "Bank Transfer", status: "paid", client: "Local Market Store" },
 
   // March 2026
-  { id: "t_301", date: "2026-03-28", type: "income", category: "Sales Revenue", description: "Monthly sales total", amount: 3950.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
-  { id: "t_302", date: "2026-03-22", type: "expense", category: "Salaries", description: "Staff wages", amount: 1380.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_303", date: "2026-03-15", type: "expense", category: "Rent", description: "Cafe space - March rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_304", date: "2026-03-10", type: "expense", category: "Taxes", description: "Quarterly VAT payment", amount: 640.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_305", date: "2026-03-04", type: "expense", category: "Utilities", description: "Electricity & water", amount: 372.5, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_301", date: "2026-03-28", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "Monthly sales total", amount: 3950.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
+  { id: "t_302", date: "2026-03-22", type: "payroll", documentType: "receipt", category: "Salaries", description: "Staff wages", amount: 1380.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_303", date: "2026-03-15", type: "expense", documentType: "invoice", category: "Rent", description: "Office space - March rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_304", date: "2026-03-10", type: "tax_payment", documentType: "receipt", category: "Taxes", description: "Quarterly VAT payment", amount: 640.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_305", date: "2026-03-04", type: "expense", documentType: "invoice", category: "Utilities", description: "Electricity & water", amount: 372.5, paymentMethod: "Bank Transfer", status: "paid" },
 
   // February 2026
-  { id: "t_401", date: "2026-02-26", type: "income", category: "Sales Revenue", description: "Monthly sales total", amount: 3420.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
-  { id: "t_402", date: "2026-02-20", type: "expense", category: "Salaries", description: "Staff wages", amount: 1380.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_403", date: "2026-02-14", type: "expense", category: "Rent", description: "Cafe space - February rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_404", date: "2026-02-08", type: "expense", category: "Marketing", description: "Valentine promo campaign", amount: 210.0, paymentMethod: "Credit Card", status: "paid" },
+  { id: "t_401", date: "2026-02-26", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "Monthly sales total", amount: 3420.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
+  { id: "t_402", date: "2026-02-20", type: "payroll", documentType: "receipt", category: "Salaries", description: "Staff wages", amount: 1380.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_403", date: "2026-02-14", type: "expense", documentType: "invoice", category: "Rent", description: "Office space - February rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_404", date: "2026-02-08", type: "expense", documentType: "invoice", category: "Marketing", description: "Valentine promo campaign", amount: 210.0, paymentMethod: "Credit Card", status: "paid" },
 
   // January 2026
-  { id: "t_501", date: "2026-01-29", type: "income", category: "Sales Revenue", description: "Monthly sales total", amount: 2980.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
-  { id: "t_502", date: "2026-01-20", type: "expense", category: "Salaries", description: "Staff wages", amount: 1300.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_503", date: "2026-01-15", type: "expense", category: "Rent", description: "Cafe space - January rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_501", date: "2026-01-29", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "Monthly sales total", amount: 2980.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
+  { id: "t_502", date: "2026-01-20", type: "payroll", documentType: "receipt", category: "Salaries", description: "Staff wages", amount: 1300.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_503", date: "2026-01-15", type: "expense", documentType: "invoice", category: "Rent", description: "Office space - January rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_504", date: "2026-01-10", type: "owner_draw", documentType: "receipt", category: "Other Income", description: "Owner monthly draw", amount: 800.0, paymentMethod: "Bank Transfer", status: "paid" },
 
   // December 2025
-  { id: "t_601", date: "2025-12-30", type: "income", category: "Sales Revenue", description: "Holiday season sales", amount: 4520.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
-  { id: "t_602", date: "2025-12-22", type: "expense", category: "Salaries", description: "Staff wages + holiday bonus", amount: 1800.0, paymentMethod: "Bank Transfer", status: "paid" },
-  { id: "t_603", date: "2025-12-15", type: "expense", category: "Rent", description: "Cafe space - December rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_601", date: "2025-12-30", type: "income", documentType: "invoice_receipt", category: "Sales Revenue", description: "Holiday season sales", amount: 4520.0, paymentMethod: "Mobile Payment", status: "paid", client: "Walk-in" },
+  { id: "t_602", date: "2025-12-22", type: "payroll", documentType: "receipt", category: "Salaries", description: "Staff wages + holiday bonus", amount: 1800.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_603", date: "2025-12-15", type: "expense", documentType: "invoice", category: "Rent", description: "Office space - December rent", amount: 1200.0, paymentMethod: "Bank Transfer", status: "paid" },
+  { id: "t_604", date: "2025-12-28", type: "adjustment", documentType: "receipt", category: "Miscellaneous", description: "Year-end inventory adjustment", amount: 35.0, paymentMethod: "Cash", status: "paid" },
 ];
 
+// ---------------------------------------------------------------------------
+// Receipts
+// ---------------------------------------------------------------------------
+
 export const receipts: Receipt[] = [
-  { id: "r_001", fileName: "office-supplies-store.pdf", supplier: "Office Supplies Store", date: "2026-05-20", amount: 45.75, category: "Office Supplies", classification: "Operating Expense - Supplies", status: "categorized", confidenceScore: 94, uploadedAt: "2026-05-20T09:14:00Z" },
-  { id: "r_002", fileName: "electric-company-may.jpg", supplier: "Cabo Verde Electric Co.", date: "2026-05-12", amount: 410.4, category: "Utilities", classification: "Operating Expense - Utilities", status: "categorized", confidenceScore: 97, uploadedAt: "2026-05-12T16:30:00Z" },
-  { id: "r_003", fileName: "coffee-supplier-invoice.pdf", supplier: "Highland Coffee Roasters", date: "2026-05-11", amount: 620.0, category: "Office Supplies", classification: "Cost of Goods Sold", status: "needs_review", confidenceScore: 71, uploadedAt: "2026-05-11T11:02:00Z" },
-  { id: "r_004", fileName: "ad-receipt.png", supplier: "Meta Platforms", date: "2026-05-15", amount: 320.0, category: "Marketing", classification: "Operating Expense - Advertising", status: "categorized", confidenceScore: 89, uploadedAt: "2026-05-15T08:45:00Z" },
-  { id: "r_005", fileName: "fuel-station.jpg", supplier: "Shell Mindelo", date: "2026-05-05", amount: 88.6, category: "Transport", classification: "Operating Expense - Transport", status: "categorized", confidenceScore: 92, uploadedAt: "2026-05-05T18:20:00Z" },
+  { id: "r_001", fileName: "office-supplies-store.pdf", supplier: "Office Supplies Store", date: "2026-05-20", amount: 45.75, category: "Office Supplies", classification: "Operating Expense - Supplies", documentType: "invoice", status: "categorized", confidenceScore: 94, uploadedAt: "2026-05-20T09:14:00Z" },
+  { id: "r_002", fileName: "electric-company-may.jpg", supplier: "Cabo Verde Electric Co.", date: "2026-05-12", amount: 410.4, category: "Utilities", classification: "Operating Expense - Utilities", documentType: "invoice_receipt", status: "categorized", confidenceScore: 97, uploadedAt: "2026-05-12T16:30:00Z" },
+  { id: "r_003", fileName: "coffee-supplier-invoice.pdf", supplier: "Highland Coffee Roasters", date: "2026-05-11", amount: 620.0, category: "Office Supplies", classification: "Cost of Goods Sold", documentType: "invoice", status: "needs_review", confidenceScore: 71, uploadedAt: "2026-05-11T11:02:00Z" },
+  { id: "r_004", fileName: "ad-receipt.png", supplier: "Meta Platforms", date: "2026-05-15", amount: 320.0, category: "Marketing", classification: "Operating Expense - Advertising", documentType: "invoice_receipt", status: "categorized", confidenceScore: 89, uploadedAt: "2026-05-15T08:45:00Z" },
+  { id: "r_005", fileName: "fuel-station.jpg", supplier: "Shell Mindelo", date: "2026-05-05", amount: 88.6, category: "Transport", classification: "Operating Expense - Transport", documentType: "receipt", status: "categorized", confidenceScore: 92, uploadedAt: "2026-05-05T18:20:00Z" },
   { id: "r_006", fileName: "scan_unknown_0521.jpg", supplier: "Processing...", date: "2026-05-21", amount: 0, category: "-", classification: "-", status: "processing", confidenceScore: 0, uploadedAt: "2026-05-21T07:55:00Z" },
 ];
+
+// ---------------------------------------------------------------------------
+// Clients
+// ---------------------------------------------------------------------------
 
 export const clients: Client[] = [
   { id: "c_001", name: "Green Cafe", email: "ana@greencafe.cv", phone: "+238 991 2030", businessType: "Cafe / Restaurant", totalBilled: 12450.0, outstandingBalance: 0, status: "active" },
@@ -146,6 +157,11 @@ export const clients: Client[] = [
   { id: "c_006", name: "Sunset Bistro", email: "info@sunsetbistro.cv", phone: "+238 970 1144", businessType: "Cafe / Restaurant", totalBilled: 1500.0, outstandingBalance: 0, status: "inactive" },
 ];
 
+// ---------------------------------------------------------------------------
+// Static monthly report (kept for any consumer that still imports it; the
+// dynamic monthly report is built on the fly from filtered transactions).
+// ---------------------------------------------------------------------------
+
 export const monthlyReport: MonthlyReportRow[] = [
   { month: "Dec 2025", income: 4520.0, expenses: 3000.0, profit: 1520.0 },
   { month: "Jan 2026", income: 2980.0, expenses: 2500.0, profit: 480.0 },
@@ -154,6 +170,10 @@ export const monthlyReport: MonthlyReportRow[] = [
   { month: "Apr 2026", income: 5610.75, expenses: 3133.2, profit: 2477.55 },
   { month: "May 2026", income: 4365.75, expenses: 4147.74, profit: 218.01 },
 ];
+
+// ---------------------------------------------------------------------------
+// Pricing
+// ---------------------------------------------------------------------------
 
 export const pricingPlans: PricingPlan[] = [
   {

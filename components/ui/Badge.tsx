@@ -7,6 +7,7 @@ type Tone =
   | "amber"
   | "red"
   | "blue"
+  | "navy"
   | "slate"
   | "purple";
 
@@ -22,7 +23,11 @@ const tones: Record<Tone, string> = {
   amber:
     "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-400/20",
   red: "bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-400/20",
+  // "blue" maps to the sky ramp (which is now the Accent Orange ramp in
+  // this build). Kept for backwards compatibility with status badges.
   blue: "bg-sky-50 text-sky-700 ring-sky-600/20 dark:bg-sky-500/10 dark:text-sky-300 dark:ring-sky-400/20",
+  // True brand-blue badge for Fatura and other primary-blue accents.
+  navy: "bg-navy-100 text-navy-800 ring-navy-700/20 dark:bg-navy-700/30 dark:text-navy-100 dark:ring-navy-400/20",
   slate:
     "bg-slate-100 text-slate-700 ring-slate-500/20 dark:bg-navy-800 dark:text-slate-300 dark:ring-slate-400/10",
   purple:

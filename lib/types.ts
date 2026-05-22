@@ -1,7 +1,38 @@
 // lib/types.ts
 // Core data models for SmartBooks AI
 
-export type TransactionType = "income" | "expense";
+/**
+ * Full set of accounting movement types supported by the app.
+ * The original "income" / "expense" pair is kept; the rest model the
+ * additional movements common in Portuguese / Cape Verdean SMB bookkeeping.
+ */
+export type TransactionType =
+  | "income"
+  | "expense"
+  | "transfer"
+  | "refund"
+  | "tax_payment"
+  | "payroll"
+  | "owner_draw"
+  | "owner_contribution"
+  | "bank_fee"
+  | "adjustment";
+
+/**
+ * Portuguese/Cape Verdean accounting source documents:
+ *   invoice         - Fatura
+ *   invoice_receipt - Fatura-Recibo
+ *   receipt         - Recibo
+ *   debit_note      - Nota de Debito
+ *   credit_note     - Nota de Credito
+ */
+export type DocumentType =
+  | "invoice"
+  | "invoice_receipt"
+  | "receipt"
+  | "debit_note"
+  | "credit_note";
+
 export type TransactionStatus = "paid" | "pending" | "overdue";
 export type ReceiptStatus = "processing" | "categorized" | "needs_review";
 export type ClientStatus = "active" | "inactive" | "lead";
@@ -11,13 +42,7 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  /**
-   * Free-form role label, e.g. "Owner", "Accountant",
-   * "Student / Business Owner". Kept as a string so the demo profile
-   * can describe richer identities than the original three-value enum.
-   */
   role: string;
-  /** Optional institution / school name. */
   institution?: string;
 }
 
@@ -29,7 +54,6 @@ export interface Business {
   taxId: string;
   currency: string;
   language: string;
-  /** Optional institution / school the business is associated with. */
   institution?: string;
   notifications: {
     taxReminders: boolean;
@@ -41,8 +65,9 @@ export interface Business {
 
 export interface Transaction {
   id: string;
-  date: string; // ISO date string (YYYY-MM-DD)
+  date: string; // ISO date (YYYY-MM-DD)
   type: TransactionType;
+  documentType: DocumentType;
   category: string;
   description: string;
   amount: number;
@@ -58,7 +83,9 @@ export interface Receipt {
   date: string;
   amount: number;
   category: string;
-  classification: string; // suggested accounting classification
+  classification: string;
+  /** Suggested document type from the OCR/AI extraction (mock). */
+  documentType?: DocumentType;
   status: ReceiptStatus;
   confidenceScore: number; // 0-100
   uploadedAt: string;

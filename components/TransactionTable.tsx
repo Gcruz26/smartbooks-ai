@@ -3,6 +3,12 @@ import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import type { Transaction } from "@/lib/types";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { Badge, statusToTone, statusLabel } from "@/components/ui/Badge";
+import {
+  documentTypeBadgeTone,
+  getDocumentTypeLabel,
+  getTransactionTypeLabel,
+  isOperatingIncome,
+} from "@/lib/accounting";
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -31,22 +37,23 @@ export function TransactionTable({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[720px] text-lg">
+      <table className="w-full min-w-[900px] text-lg">
         <thead>
           <tr className="border-b border-slate-200 text-left text-base font-semibold uppercase tracking-wide text-slate-500 dark:border-navy-800 dark:text-slate-400">
-            <th className="px-5 py-5 font-semibold">Description</th>
-            {!compact && <th className="px-5 py-5 font-semibold">Category</th>}
-            <th className="px-5 py-5 font-semibold">Date</th>
-            {!compact && (
-              <th className="px-5 py-5 font-semibold">Method</th>
-            )}
-            <th className="px-5 py-5 font-semibold">Status</th>
-            <th className="px-5 py-5 text-right font-semibold">Amount</th>
+            <th className="px-5 py-5">Description</th>
+            {!compact && <th className="px-5 py-5">Type</th>}
+            <th className="px-5 py-5">Document</th>
+            {!compact && <th className="px-5 py-5">Category</th>}
+            <th className="px-5 py-5">Date</th>
+            {!compact && <th className="px-5 py-5">Method</th>}
+            <th className="px-5 py-5">Status</th>
+            <th className="px-5 py-5 text-right">Amount</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 dark:divide-navy-800">
           {transactions.map((t) => {
-            const isIncome = t.type === "income";
+            const isIncome = isOperatingIncome(t);
+            const isCreditNote = t.documentType === "credit_note";
             return (
               <tr
                 key={t.id}
@@ -81,6 +88,16 @@ export function TransactionTable({
                   </div>
                 </td>
                 {!compact && (
+                  <td className="px-5 py-5 text-base text-slate-600 dark:text-slate-300">
+                    {getTransactionTypeLabel(t.type)}
+                  </td>
+                )}
+                <td className="px-5 py-5">
+                  <Badge tone={documentTypeBadgeTone[t.documentType]}>
+                    {getDocumentTypeLabel(t.documentType)}
+                  </Badge>
+                </td>
+                {!compact && (
                   <td className="px-5 py-5 text-slate-600 dark:text-slate-300">
                     {t.category}
                   </td>
@@ -103,11 +120,15 @@ export function TransactionTable({
                     "px-5 py-5 text-right font-mono font-semibold",
                     isIncome
                       ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-navy-900 dark:text-white"
+                      : "text-navy-900 dark:text-white",
+                    isCreditNote && "italic"
                   )}
                 >
-                  {isIncome ? "+" : "-"}
+                  {isCreditNote ? "(" : ""}
+                  {isIncome && !isCreditNote ? "+" : ""}
+                  {!isIncome && !isCreditNote ? "-" : ""}
                   {formatCurrency(t.amount)}
+                  {isCreditNote ? ")" : ""}
                 </td>
               </tr>
             );

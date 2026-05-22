@@ -35,6 +35,13 @@ import {
   formatPeriodLabel,
   type ReportExportData,
 } from "@/lib/exporters";
+import {
+  ALL_DOCUMENT_TYPES,
+  documentCounts,
+  documentTypeBadgeTone,
+  documentTypeLabels,
+} from "@/lib/accounting";
+import { Badge } from "@/components/ui/Badge";
 
 type Status =
   | { type: "idle" }
@@ -84,6 +91,10 @@ export default function ReportsPage() {
   const categoryData = expensesByCategory(filteredTransactions);
   const monthlyRows = useMemo(
     () => buildMonthlyReport(filteredTransactions),
+    [filteredTransactions]
+  );
+  const docCounts = useMemo(
+    () => documentCounts(filteredTransactions),
     [filteredTransactions]
   );
 
@@ -366,6 +377,33 @@ export default function ReportsPage() {
         <ChartCard title="Expense Breakdown" subtitle="By category">
           <CategoryChart data={categoryData} />
         </ChartCard>
+      </div>
+
+      {/* Document summary */}
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white shadow-card dark:border-navy-800 dark:bg-navy-900">
+        <div className="border-b border-slate-100 px-6 py-5 dark:border-navy-800">
+          <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
+            Document Summary
+          </h3>
+          <p className="mt-1 text-base text-slate-500 dark:text-slate-400">
+            Count of accounting documents in this period
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-px bg-slate-100 dark:bg-navy-800 sm:grid-cols-3 lg:grid-cols-5">
+          {ALL_DOCUMENT_TYPES.map((doc) => (
+            <div
+              key={doc}
+              className="bg-white px-6 py-5 dark:bg-navy-900"
+            >
+              <Badge tone={documentTypeBadgeTone[doc]}>
+                {documentTypeLabels[doc]}
+              </Badge>
+              <p className="mt-3 font-display text-3xl font-bold text-navy-900 dark:text-white">
+                {docCounts[doc]}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Monthly summary table */}

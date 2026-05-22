@@ -9,6 +9,10 @@ import type {
   MonthlyReportRow,
 } from "./types";
 import { formatCurrency, formatDate, isoForFileName } from "./utils";
+import {
+  getTransactionTypeLabel,
+  getDocumentTypeLabel,
+} from "./accounting";
 
 export interface ReportExportData {
   startDate?: string;
@@ -236,7 +240,8 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
   // 2) Transactions sheet
   const txHeader = [
     "Date",
-    "Type",
+    "Transaction Type",
+    "Document Type",
     "Category",
     "Description",
     "Client",
@@ -246,7 +251,8 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
   ];
   const txRows = data.transactions.map((t) => [
     t.date,
-    t.type,
+    getTransactionTypeLabel(t.type),
+    getDocumentTypeLabel(t.documentType),
     t.category,
     t.description,
     t.client ?? "",
@@ -257,7 +263,8 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
   const wsTx = XLSX.utils.aoa_to_sheet([txHeader, ...txRows]);
   wsTx["!cols"] = [
     { wch: 12 }, // date
-    { wch: 9 }, // type
+    { wch: 16 }, // transaction type
+    { wch: 16 }, // document type
     { wch: 18 }, // category
     { wch: 36 }, // description
     { wch: 22 }, // client

@@ -5,6 +5,12 @@ import { useRef, useState } from "react";
 import { UploadCloud, FileText, Loader2, Sparkles, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency, cn } from "@/lib/utils";
+import type { DocumentType } from "@/lib/types";
+import {
+  documentTypeBadgeTone,
+  documentTypeLabels,
+} from "@/lib/accounting";
+import { Badge } from "@/components/ui/Badge";
 
 interface ExtractionResult {
   fileName: string;
@@ -13,6 +19,7 @@ interface ExtractionResult {
   amount: number;
   category: string;
   classification: string;
+  documentType: DocumentType;
   confidenceScore: number;
 }
 
@@ -24,6 +31,7 @@ const mockResults: Omit<ExtractionResult, "fileName">[] = [
     amount: 45.75,
     category: "Office Expenses",
     classification: "Operating Expense - Supplies",
+    documentType: "invoice",
     confidenceScore: 94,
   },
   {
@@ -32,6 +40,7 @@ const mockResults: Omit<ExtractionResult, "fileName">[] = [
     amount: 312.4,
     category: "Cost of Goods",
     classification: "Cost of Goods Sold",
+    documentType: "invoice_receipt",
     confidenceScore: 88,
   },
   {
@@ -40,6 +49,7 @@ const mockResults: Omit<ExtractionResult, "fileName">[] = [
     amount: 198.2,
     category: "Utilities",
     classification: "Operating Expense - Utilities",
+    documentType: "receipt",
     confidenceScore: 96,
   },
 ];
@@ -155,6 +165,16 @@ export function ReceiptUploader({ onExtracted }: ReceiptUploaderProps) {
             <Field label="Date" value={result.date} />
             <Field label="Amount" value={formatCurrency(result.amount)} />
             <Field label="Category" value={result.category} />
+            <div className="bg-white px-6 py-4 dark:bg-navy-900">
+              <p className="text-sm font-medium uppercase tracking-wide text-slate-400">
+                Document type
+              </p>
+              <div className="mt-1.5">
+                <Badge tone={documentTypeBadgeTone[result.documentType]}>
+                  {documentTypeLabels[result.documentType]}
+                </Badge>
+              </div>
+            </div>
             <Field
               label="Suggested classification"
               value={result.classification}

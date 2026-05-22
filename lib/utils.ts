@@ -7,6 +7,13 @@ import type {
   CategoryBreakdown,
   MonthlyReportRow,
 } from "./types";
+import {
+  isOperatingIncome,
+  isOperatingExpense,
+  sumOperatingIncome,
+  sumOperatingExpenses,
+  operatingProfit,
+} from "./accounting";
 
 /** Join class names, skipping falsy values. */
 export function cn(...classes: (string | false | null | undefined)[]): string {
@@ -23,7 +30,7 @@ export function formatCurrency(amount: number, currency = "USD"): string {
   }).format(amount);
 }
 
-/** Compact currency for tight spaces, e.g. $12.4k */
+/** Compact currency for tight spaces. */
 export function formatCompactCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -33,7 +40,7 @@ export function formatCompactCurrency(amount: number): string {
   }).format(amount);
 }
 
-/** Format an ISO date string into a readable form, e.g. "May 20, 2026". */
+/** Format an ISO date string into a readable form. */
 export function formatDate(iso: string): string {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return iso;
@@ -44,38 +51,48 @@ export function formatDate(iso: string): string {
   });
 }
 
-/** Sum transaction amounts for a given type. */
+/**
+ * Sum operating income or operating expenses for a transaction list.
+ * "income" now covers all operating income (currently the "income" type),
+ * "expense" now covers all operating expenses (expense, payroll,
+ * tax_payment, bank_fee). Credit notes inversely adjust the relevant side.
+ */
 export function sumByType(
   transactions: Transaction[],
   type: "income" | "expense"
 ): number {
-  return transactions
-    .filter((t) => t.type === type)
-    .reduce((acc, t) => acc + t.amount, 0);
+  return type === "income"
+    ? sumOperatingIncome(transactions)
+    : sumOperatingExpenses(transactions);
 }
 
-/** Net profit = income - expenses. */
+/** Operating profit (income - expenses) for a list of transactions. */
 export function netProfit(transactions: Transaction[]): number {
-  return sumByType(transactions, "income") - sumByType(transactions, "expense");
+  return operatingProfit(transactions);
 }
 
-/** Net profit margin as a percentage (0 if no income). */
+/** Operating profit margin as a percentage. */
 export function profitMargin(transactions: Transaction[]): number {
-  const income = sumByType(transactions, "income");
+  const income = sumOperatingIncome(transactions);
   if (income === 0) return 0;
-  return (netProfit(transactions) / income) * 100;
+  return (operatingProfit(transactions) / income) * 100;
 }
 
-/** Group expense transactions by category and total each. */
+/**
+ * Group operating-expense transactions by category. Credit notes deduct
+ * from their category bucket.
+ */
 export function expensesByCategory(
   transactions: Transaction[]
 ): CategoryBreakdown[] {
   const map = new Map<string, number>();
   for (const t of transactions) {
-    if (t.type !== "expense") continue;
-    map.set(t.category, (map.get(t.category) ?? 0) + t.amount);
+    if (!isOperatingExpense(t)) continue;
+    const delta = t.documentType === "credit_note" ? -t.amount : t.amount;
+    map.set(t.category, (map.get(t.category) ?? 0) + delta);
   }
   return Array.from(map.entries())
+    .filter(([, amount]) => amount !== 0)
     .map(([category, amount]) => ({ category, amount }))
     .sort((a, b) => b.amount - a.amount);
 }
@@ -92,11 +109,7 @@ export function monthLabel(iso: string): string {
   return d.toLocaleDateString("en-US", { month: "short" });
 }
 
-/**
- * Filter a list of transactions to a date range (inclusive). When either
- * bound is undefined, that side is open. Dates are compared as YYYY-MM-DD
- * strings, which works because the input format is ISO.
- */
+/** Filter a list of transactions to a date range (inclusive). */
 export function filterByDateRange(
   transactions: Transaction[],
   startDate?: string,
@@ -109,10 +122,8 @@ export function filterByDateRange(
   });
 }
 
-/** Friendly alias for the transaction filter. */
 export const filterTransactionsByDateRange = filterByDateRange;
 
-/** Filter receipts by their `date` field (inclusive on both ends). */
 export function filterReceiptsByDateRange(
   receipts: Receipt[],
   startDate?: string,
@@ -125,11 +136,7 @@ export function filterReceiptsByDateRange(
   });
 }
 
-/**
- * Build a monthly summary (income / expenses / profit) directly from
- * transactions. The resulting rows are sorted chronologically and labelled
- * like "May 2026".
- */
+/** Build a monthly summary using the operating P&L rules. */
 export function buildMonthlyReport(
   transactions: Transaction[]
 ): MonthlyReportRow[] {
@@ -137,8 +144,14 @@ export function buildMonthlyReport(
   for (const t of transactions) {
     const key = monthKey(t.date);
     const bucket = buckets.get(key) ?? { income: 0, expenses: 0 };
-    if (t.type === "income") bucket.income += t.amount;
-    else bucket.expenses += t.amount;
+    if (isOperatingIncome(t)) {
+      bucket.income += t.documentType === "credit_note" ? -t.amount : t.amount;
+    } else if (t.type === "refund") {
+      bucket.income -= t.documentType === "credit_note" ? -t.amount : t.amount;
+    } else if (isOperatingExpense(t)) {
+      bucket.expenses +=
+        t.documentType === "credit_note" ? -t.amount : t.amount;
+    }
     buckets.set(key, bucket);
   }
   return Array.from(buckets.entries())
@@ -157,25 +170,23 @@ export function buildMonthlyReport(
     });
 }
 
-/** Format an ISO date for file names (YYYY-MM-DD, no slashes). */
 export function isoForFileName(iso: string): string {
   if (!iso) return "";
   return iso.slice(0, 10);
 }
 
-/** Build a human label for the active filter period. */
 export function getActivePeriodLabel(
   startDate?: string,
   endDate?: string
 ): string {
   if (!startDate && !endDate) return "All Available Data";
-  if (startDate && endDate) return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  if (startDate && endDate)
+    return `${formatDate(startDate)} - ${formatDate(endDate)}`;
   if (startDate) return `From ${formatDate(startDate)}`;
   if (endDate) return `Until ${formatDate(endDate)}`;
   return "All Available Data";
 }
 
-/** Aggregated summary used by the Dashboard summary cards. */
 export interface DashboardSummary {
   totalIncome: number;
   totalExpenses: number;
@@ -185,13 +196,12 @@ export interface DashboardSummary {
   receiptCount: number;
 }
 
-/** Compute the dashboard summary from filtered transactions + receipts. */
 export function calculateDashboardSummary(
   transactions: Transaction[],
   receipts: Receipt[]
 ): DashboardSummary {
-  const totalIncome = sumByType(transactions, "income");
-  const totalExpenses = sumByType(transactions, "expense");
+  const totalIncome = sumOperatingIncome(transactions);
+  const totalExpenses = sumOperatingExpenses(transactions);
   return {
     totalIncome,
     totalExpenses,
@@ -202,12 +212,10 @@ export function calculateDashboardSummary(
   };
 }
 
-/** Two-digit zero-padded number, for date math. */
 function pad2(n: number): string {
   return n < 10 ? `0${n}` : String(n);
 }
 
-/** Format a Date object as a YYYY-MM-DD ISO date string (local time). */
 export function toISODateString(d: Date): string {
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
@@ -224,39 +232,29 @@ export interface DateRange {
   end: string;
 }
 
-/**
- * Compute the date range for a quick period anchored at the given date.
- * Pass `null` for the "all" kind to clear the filter.
- */
 export function quickPeriod(
   kind: QuickPeriodKind,
   anchor: Date = new Date()
 ): DateRange | null {
   if (kind === "all") return null;
-
   const y = anchor.getFullYear();
-  const m = anchor.getMonth(); // 0-11
-
+  const m = anchor.getMonth();
   if (kind === "this-month") {
     const start = new Date(y, m, 1);
     const end = new Date(y, m + 1, 0);
     return { start: toISODateString(start), end: toISODateString(end) };
   }
-
   if (kind === "last-month") {
     const start = new Date(y, m - 1, 1);
     const end = new Date(y, m, 0);
     return { start: toISODateString(start), end: toISODateString(end) };
   }
-
   if (kind === "this-quarter") {
-    const qStartMonth = Math.floor(m / 3) * 3;
-    const start = new Date(y, qStartMonth, 1);
-    const end = new Date(y, qStartMonth + 3, 0);
+    const qStart = Math.floor(m / 3) * 3;
+    const start = new Date(y, qStart, 1);
+    const end = new Date(y, qStart + 3, 0);
     return { start: toISODateString(start), end: toISODateString(end) };
   }
-
-  // this-year
   const start = new Date(y, 0, 1);
   const end = new Date(y, 11, 31);
   return { start: toISODateString(start), end: toISODateString(end) };

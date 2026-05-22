@@ -8,7 +8,7 @@ import { ReceiptUploader } from "@/components/ReceiptUploader";
 import { StatCard } from "@/components/StatCard";
 import { Badge, statusToTone, statusLabel } from "@/components/ui/Badge";
 import { receipts as seedReceipts } from "@/lib/mockData";
-import type { Receipt } from "@/lib/types";
+import type { Receipt, DocumentType } from "@/lib/types";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 
 export default function ReceiptsPage() {
@@ -25,6 +25,7 @@ export default function ReceiptsPage() {
     amount: number;
     category: string;
     classification: string;
+    documentType: DocumentType;
     confidenceScore: number;
   }) {
     const newReceipt: Receipt = {
@@ -35,6 +36,7 @@ export default function ReceiptsPage() {
       amount: result.amount,
       category: result.category,
       classification: result.classification,
+      documentType: result.documentType,
       status: result.confidenceScore >= 80 ? "categorized" : "needs_review",
       confidenceScore: result.confidenceScore,
       uploadedAt: new Date().toISOString(),

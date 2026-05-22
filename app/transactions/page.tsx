@@ -15,8 +15,29 @@ import {
   expenseCategories,
   paymentMethods,
 } from "@/lib/mockData";
-import type { Transaction, TransactionType, TransactionStatus } from "@/lib/types";
+import type {
+  Transaction,
+  TransactionType,
+  TransactionStatus,
+  DocumentType,
+} from "@/lib/types";
 import { sumByType, netProfit, formatCurrency } from "@/lib/utils";
+import {
+  ALL_TRANSACTION_TYPES,
+  ALL_DOCUMENT_TYPES,
+  transactionTypeLabels,
+  documentTypeLabels,
+} from "@/lib/accounting";
+
+const TRANSACTION_TYPE_OPTIONS = ALL_TRANSACTION_TYPES.map((t) => ({
+  value: t,
+  label: transactionTypeLabels[t],
+}));
+
+const DOCUMENT_TYPE_OPTIONS = ALL_DOCUMENT_TYPES.map((d) => ({
+  value: d,
+  label: documentTypeLabels[d],
+}));
 
 export default function TransactionsPage() {
   const [items, setItems] = useState<Transaction[]>(seedTransactions);
@@ -25,6 +46,7 @@ export default function TransactionsPage() {
   // Filters
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [docFilter, setDocFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -32,17 +54,23 @@ export default function TransactionsPage() {
     return items
       .filter((t) => (typeFilter === "all" ? true : t.type === typeFilter))
       .filter((t) =>
+        docFilter === "all" ? true : t.documentType === docFilter
+      )
+      .filter((t) =>
         categoryFilter === "all" ? true : t.category === categoryFilter
       )
-      .filter((t) => (statusFilter === "all" ? true : t.status === statusFilter))
+      .filter((t) =>
+        statusFilter === "all" ? true : t.status === statusFilter
+      )
       .filter((t) =>
         search
           ? t.description.toLowerCase().includes(search.toLowerCase()) ||
-            t.category.toLowerCase().includes(search.toLowerCase())
+            t.category.toLowerCase().includes(search.toLowerCase()) ||
+            (t.client ?? "").toLowerCase().includes(search.toLowerCase())
           : true
       )
       .sort((a, b) => b.date.localeCompare(a.date));
-  }, [items, typeFilter, categoryFilter, statusFilter, search]);
+  }, [items, typeFilter, docFilter, categoryFilter, statusFilter, search]);
 
   const totalIncome = sumByType(filtered, "income");
   const totalExpenses = sumByType(filtered, "expense");
@@ -60,7 +88,7 @@ export default function TransactionsPage() {
   return (
     <DashboardShell
       title="Transactions"
-      subtitle="Track every dollar in and out of your business"
+      subtitle="Track every movement and its supporting accounting document."
     >
       {/* Summary */}
       <div className="grid gap-5 sm:grid-cols-3">
@@ -102,7 +130,6 @@ export default function TransactionsPage() {
         </Button>
       </div>
 
-      {/* Add form */}
       {showForm && (
         <TransactionForm
           onAdd={addTransaction}
@@ -111,15 +138,23 @@ export default function TransactionsPage() {
       )}
 
       {/* Filters */}
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Select
-          label="Type"
+          label="Transaction Type"
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
           options={[
             { value: "all", label: "All types" },
-            { value: "income", label: "Income" },
-            { value: "expense", label: "Expense" },
+            ...TRANSACTION_TYPE_OPTIONS,
+          ]}
+        />
+        <Select
+          label="Document Type"
+          value={docFilter}
+          onChange={(e) => setDocFilter(e.target.value)}
+          options={[
+            { value: "all", label: "All documents" },
+            ...DOCUMENT_TYPE_OPTIONS,
           ]}
         />
         <Select
@@ -147,7 +182,7 @@ export default function TransactionsPage() {
       {/* Table */}
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-card dark:border-navy-800 dark:bg-navy-900">
         <div className="border-b border-slate-100 px-6 py-5 dark:border-navy-800">
-          <h3 className="font-display text-lg font-bold text-navy-900 dark:text-white">
+          <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
             {filtered.length} transaction{filtered.length !== 1 ? "s" : ""}
           </h3>
         </div>
@@ -165,6 +200,7 @@ function TransactionForm({
   onCancel: () => void;
 }) {
   const [type, setType] = useState<TransactionType>("expense");
+  const [documentType, setDocumentType] = useState<DocumentType>("invoice");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [category, setCategory] = useState(expenseCategories[0]);
   const [description, setDescription] = useState("");
@@ -180,6 +216,7 @@ function TransactionForm({
       id: `t_${Date.now()}`,
       date,
       type,
+      documentType,
       category,
       description: description || "Untitled transaction",
       amount: parseFloat(amount) || 0,
@@ -194,9 +231,14 @@ function TransactionForm({
       className="mt-6 animate-fade-up rounded-2xl border border-slate-200 bg-white p-7 shadow-card dark:border-navy-800 dark:bg-navy-900"
     >
       <div className="mb-5 flex items-center justify-between">
-        <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
-          New Transaction
-        </h3>
+        <div>
+          <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
+            New Transaction
+          </h3>
+          <p className="mt-1 text-base text-slate-500 dark:text-slate-400">
+            Choose the movement type and the accounting document that supports it.
+          </p>
+        </div>
         <button
           type="button"
           onClick={onCancel}
@@ -209,21 +251,21 @@ function TransactionForm({
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <Select
-          label="Type"
+          label="Transaction Type"
           value={type}
           onChange={(e) => {
             const newType = e.target.value as TransactionType;
             setType(newType);
-            setCategory(
-              newType === "income"
-                ? incomeCategories[0]
-                : expenseCategories[0]
-            );
+            if (newType === "income") setCategory(incomeCategories[0]);
+            else setCategory(expenseCategories[0]);
           }}
-          options={[
-            { value: "expense", label: "Expense" },
-            { value: "income", label: "Income" },
-          ]}
+          options={TRANSACTION_TYPE_OPTIONS}
+        />
+        <Select
+          label="Document Type"
+          value={documentType}
+          onChange={(e) => setDocumentType(e.target.value as DocumentType)}
+          options={DOCUMENT_TYPE_OPTIONS}
         />
         <Input
           label="Date"
