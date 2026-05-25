@@ -34,7 +34,12 @@ export type DocumentType =
   | "credit_note";
 
 export type TransactionStatus = "paid" | "pending" | "overdue";
-export type ReceiptStatus = "processing" | "categorized" | "needs_review";
+export type ReceiptStatus =
+  | "processing"
+  | "categorized"
+  | "needs_review"
+  | "approved"
+  | "rejected";
 export type ClientStatus = "active" | "inactive" | "lead";
 
 export interface User {
@@ -79,16 +84,46 @@ export interface Transaction {
 export interface Receipt {
   id: string;
   fileName: string;
-  supplier: string;
-  date: string;
-  amount: number;
-  category: string;
-  classification: string;
-  /** Suggested document type from the OCR/AI extraction (mock). */
-  documentType?: DocumentType;
-  status: ReceiptStatus;
-  confidenceScore: number; // 0-100
   uploadedAt: string;
+  status: ReceiptStatus;
+
+  /** Suggested document type from the OCR/AI extraction. */
+  documentType: DocumentType;
+
+  /** Supplier (or client, for income receipts). */
+  supplier: string;
+  taxId?: string;
+  documentNumber?: string;
+  /** Date printed on the source document. */
+  documentDate: string;
+  dueDate?: string;
+  amount: number;
+  taxAmount?: number;
+  currency: string;
+  paymentMethod?: string;
+
+  /** Suggested accounting classification. */
+  transactionType: TransactionType;
+  category: string;
+  suggestedAccount?: string;
+  classification: string;
+  description: string;
+
+  /** AI confidence (0-100) and an explanation of the call. */
+  confidenceScore: number;
+  confidenceExplanation: string;
+
+  /** Optional link to the Transaction this receipt produced. */
+  linkedTransactionId?: string;
+
+  /** Cached OCR text shown in the preview block. */
+  extractedText?: string;
+
+  /**
+   * Legacy alias for documentDate. Older mock entries used date;
+   * new code should use documentDate.
+   */
+  date?: string;
 }
 
 export interface Client {

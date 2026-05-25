@@ -55,13 +55,17 @@ export function statusToTone(status: string): Tone {
     case "categorized":
     case "active":
       return "green";
+    case "approved":
+      return "navy";
     case "pending":
-    case "processing":
     case "lead":
       return "amber";
-    case "overdue":
+    case "processing":
+      return "blue";
     case "needs_review":
+    case "overdue":
       return "red";
+    case "rejected":
     case "inactive":
       return "slate";
     default:

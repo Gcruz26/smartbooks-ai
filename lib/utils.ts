@@ -130,8 +130,9 @@ export function filterReceiptsByDateRange(
   endDate?: string
 ): Receipt[] {
   return receipts.filter((r) => {
-    if (startDate && r.date < startDate) return false;
-    if (endDate && r.date > endDate) return false;
+    const d = r.documentDate ?? r.date ?? "";
+    if (startDate && d < startDate) return false;
+    if (endDate && d > endDate) return false;
     return true;
   });
 }
