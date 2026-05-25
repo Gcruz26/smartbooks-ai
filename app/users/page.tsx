@@ -1,7 +1,7 @@
 "use client";
 
 // app/users/page.tsx
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Users,
   ShieldCheck,
@@ -13,6 +13,8 @@ import {
   Trash2,
   Power,
   KeyRound,
+  Pencil,
+  CheckCircle2,
 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { StatCard } from "@/components/StatCard";
@@ -34,6 +36,7 @@ import {
   type UserRole,
   type AppFeature,
 } from "@/lib/users";
+import { currentUser as mockCurrentUser } from "@/lib/mockData";
 
 const ROLE_OPTIONS = ALL_ROLES.map((r) => ({ value: r, label: roleLabels[r] }));
 const STATUS_OPTIONS: { value: AppUserStatus; label: string }[] = [
@@ -67,16 +70,24 @@ const statusLabel: Record<AppUserStatus, string> = {
 
 export default function UsersPage() {
   const [users, setUsers] = useState<AppUser[]>(seedUsers);
-  const [showForm, setShowForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingUser, setEditingUser] = useState<AppUser | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const total = users.length;
   const active = users.filter((u) => u.status === "active").length;
   const pending = users.filter((u) => u.status === "pending").length;
   const admins = users.filter((u) => u.role === "owner_admin").length;
 
+  function flashSuccess(msg: string) {
+    setSuccessMessage(msg);
+    window.setTimeout(() => setSuccessMessage(null), 3500);
+  }
+
   function addUser(u: AppUser) {
     setUsers((prev) => [u, ...prev]);
-    setShowForm(false);
+    setShowAddForm(false);
+    flashSuccess("User added successfully.");
   }
 
   function updateRole(id: string, role: UserRole) {
@@ -95,6 +106,25 @@ export default function UsersPage() {
 
   function removeUser(id: string) {
     setUsers((prev) => prev.filter((u) => u.id !== id));
+    flashSuccess("User removed.");
+  }
+
+  /** Update a user from the Edit form. Mutates the mock currentUser too
+   *  when the edited user is the signed-in identity, so the Header avatar
+   *  + name reflect the change after the next render. */
+  function saveEdit(next: AppUser) {
+    setUsers((prev) => prev.map((u) => (u.id === next.id ? next : u)));
+    if (next.email === mockCurrentUser.email) {
+      mockCurrentUser.name = next.name;
+      mockCurrentUser.role = roleLabels[next.role];
+    }
+    setEditingUser(null);
+    flashSuccess("User updated successfully.");
+  }
+
+  function openEdit(user: AppUser) {
+    setShowAddForm(false);
+    setEditingUser(user);
   }
 
   return (
@@ -144,16 +174,41 @@ export default function UsersPage() {
             {total} {total === 1 ? "user" : "users"} in this workspace
           </p>
         </div>
-        <Button onClick={() => setShowForm((s) => !s)}>
+        <Button
+          onClick={() => {
+            setEditingUser(null);
+            setShowAddForm((s) => !s);
+          }}
+        >
           <UserPlus className="h-5 w-5" />
           Add User
         </Button>
       </div>
 
-      {showForm && (
-        <AddUserForm
-          onAdd={addUser}
-          onCancel={() => setShowForm(false)}
+      {successMessage && (
+        <div
+          role="status"
+          className="mt-5 flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-base font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300"
+        >
+          <CheckCircle2 className="h-5 w-5" />
+          {successMessage}
+        </div>
+      )}
+
+      {showAddForm && (
+        <UserForm
+          mode="add"
+          onSubmit={addUser}
+          onCancel={() => setShowAddForm(false)}
+        />
+      )}
+
+      {editingUser && (
+        <UserForm
+          mode="edit"
+          initial={editingUser}
+          onSubmit={saveEdit}
+          onCancel={() => setEditingUser(null)}
         />
       )}
 
@@ -225,6 +280,15 @@ export default function UsersPage() {
                     </td>
                     <td className="px-5 py-5">
                       <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEdit(u)}
+                          title="Edit user"
+                          aria-label={`Edit ${u.name}`}
+                          className="rounded-lg p-2 text-slate-500 transition hover:bg-sky-50 hover:text-navy-800 dark:text-slate-400 dark:hover:bg-navy-800 dark:hover:text-sky-300"
+                        >
+                          <Pencil className="h-5 w-5" />
+                        </button>
                         <button
                           type="button"
                           onClick={() => toggleStatus(u.id)}
@@ -388,18 +452,25 @@ function PermissionRow({ feature }: { feature: AppFeature }) {
   );
 }
 
-function AddUserForm({
-  onAdd,
-  onCancel,
-}: {
-  onAdd: (u: AppUser) => void;
+/* ------------------------------------------------------------------ */
+/*  Unified Add/Edit user form                                         */
+/* ------------------------------------------------------------------ */
+
+interface UserFormProps {
+  mode: "add" | "edit";
+  initial?: AppUser;
+  onSubmit: (u: AppUser) => void;
   onCancel: () => void;
-}) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState<UserRole>("staff");
-  const [status, setStatus] = useState<AppUserStatus>("pending");
-  const [sendInvitation, setSendInvitation] = useState(true);
+}
+
+function UserForm({ mode, initial, onSubmit, onCancel }: UserFormProps) {
+  const [name, setName] = useState(initial?.name ?? "");
+  const [email, setEmail] = useState(initial?.email ?? "");
+  const [role, setRole] = useState<UserRole>(initial?.role ?? "staff");
+  const [status, setStatus] = useState<AppUserStatus>(
+    initial?.status ?? "pending"
+  );
+  const [sendInvitation, setSendInvitation] = useState(mode === "add");
   const [feedback, setFeedback] = useState<string | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
@@ -412,7 +483,25 @@ function AddUserForm({
       setFeedback("Please enter a valid email address.");
       return;
     }
-    onAdd({
+    if (!role) {
+      setFeedback("Please select a role.");
+      return;
+    }
+    if (!status) {
+      setFeedback("Please select a status.");
+      return;
+    }
+    if (mode === "edit" && initial) {
+      onSubmit({
+        ...initial,
+        name: name.trim(),
+        email: email.trim(),
+        role,
+        status,
+      });
+      return;
+    }
+    onSubmit({
       id: `u_${Date.now()}`,
       name: name.trim(),
       email: email.trim(),
@@ -427,13 +516,15 @@ function AddUserForm({
       onSubmit={handleSubmit}
       className="mt-6 animate-fade-up rounded-2xl border border-slate-200 bg-white p-7 shadow-card dark:border-navy-800 dark:bg-navy-900"
     >
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-5 flex items-center justify-between gap-4">
         <div>
           <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
-            Invite a new user
+            {mode === "edit" ? `Edit ${initial?.name}` : "Invite a new user"}
           </h3>
           <p className="mt-1 text-base text-slate-500 dark:text-slate-400">
-            Set their role and access level - you can change these later.
+            {mode === "edit"
+              ? "Update the user's details, role, or access status."
+              : "Set their role and access level - you can change these later."}
           </p>
         </div>
         <button
@@ -484,21 +575,23 @@ function AddUserForm({
         />
       </div>
 
-      <label className="mt-5 flex items-start gap-3 text-base text-slate-700 dark:text-slate-200">
-        <input
-          type="checkbox"
-          checked={sendInvitation}
-          onChange={(e) => setSendInvitation(e.target.checked)}
-          className="mt-1 h-5 w-5 rounded border-slate-300 text-sky-500 focus:ring-sky-500/30 dark:border-navy-700 dark:bg-navy-900"
-        />
-        <span>
-          <span className="font-medium">Send invitation email</span>
-          <span className="block text-sm text-slate-500 dark:text-slate-400">
-            The user receives a magic link to set up their password. (Mock - no
-            email is actually sent yet.)
+      {mode === "add" && (
+        <label className="mt-5 flex items-start gap-3 text-base text-slate-700 dark:text-slate-200">
+          <input
+            type="checkbox"
+            checked={sendInvitation}
+            onChange={(e) => setSendInvitation(e.target.checked)}
+            className="mt-1 h-5 w-5 rounded border-slate-300 text-sky-500 focus:ring-sky-500/30 dark:border-navy-700 dark:bg-navy-900"
+          />
+          <span>
+            <span className="font-medium">Send invitation email</span>
+            <span className="block text-sm text-slate-500 dark:text-slate-400">
+              The user receives a magic link to set up their password. (Mock -
+              no email is actually sent yet.)
+            </span>
           </span>
-        </span>
-      </label>
+        </label>
+      )}
 
       {feedback && (
         <p
@@ -515,10 +608,9 @@ function AddUserForm({
         </Button>
         <Button type="submit">
           <Check className="h-5 w-5" />
-          Save user
+          {mode === "edit" ? "Save changes" : "Save user"}
         </Button>
       </div>
     </form>
   );
 }
-
