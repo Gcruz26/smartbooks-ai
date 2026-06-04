@@ -1,6 +1,6 @@
 # SmartBooks AI
 
-> Smart accounting for small businesses, freelancers, and entrepreneurs.
+> Smart accounting. Financial clarity for everyone, everywhere.
 
 SmartBooks AI is a modern Next.js 14 web application that helps small businesses
 organize their finances, scan receipts, track income and expenses, and generate

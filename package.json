@@ -2,7 +2,7 @@
   "name": "smartbooks-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "SmartBooks AI - Smart accounting for small businesses",
+  "description": "SmartBooks AI - Smart accounting. Financial clarity for everyone, everywhere.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

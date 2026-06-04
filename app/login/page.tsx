@@ -45,8 +45,8 @@ export default function LoginPage() {
           </Link>
 
           <div className="max-w-md">
-            <h2 className="font-display text-5xl font-bold leading-tight text-white">
-              Smart accounting for small businesses.
+            <h2 className="font-display text-4xl font-bold leading-tight text-white sm:text-5xl">
+              Smart accounting. <span className="text-sky-300">Financial clarity</span> for everyone, everywhere.
             </h2>
             <p className="mt-5 text-xl text-slate-300">
               Track income and expenses, scan receipts with AI, and generate

@@ -111,17 +111,17 @@ export default function LandingPage() {
               <Sparkles className="h-5 w-5 text-sky-500" />
               Intelligent accounting, built for small business
             </span>
-            <h1 className="mt-7 font-display text-5xl font-bold leading-[1.1] tracking-tight text-navy-900 dark:text-white sm:text-7xl">
-              Smart accounting for{" "}
+            <h1 className="mt-7 font-display text-4xl font-bold leading-[1.1] tracking-tight text-navy-900 dark:text-white sm:text-6xl">
+              Smart accounting.{" "}
               <span className="bg-gradient-to-r from-navy-600 to-navy-800 bg-clip-text text-transparent">
-                small businesses
+                Financial clarity for everyone, everywhere.
               </span>
             </h1>
             <p className="mx-auto mt-7 max-w-2xl text-xl leading-relaxed text-slate-600 dark:text-slate-300">
-              SmartBooks AI helps small businesses, freelancers, and
-              entrepreneurs organize their finances, scan receipts, track income
-              and expenses, and generate simple financial reports using
-              intelligent technology.
+              SmartBooks AI brings smart accounting and financial clarity
+              to small businesses, freelancers, and entrepreneurs - everyone,
+              everywhere. Scan receipts, track income and expenses, and
+              generate simple financial reports using intelligent technology.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/dashboard">
@@ -307,7 +307,7 @@ export default function LandingPage() {
                 </span>
               </Link>
               <p className="mt-4 text-base text-slate-500 dark:text-slate-400">
-                Smart accounting for small businesses.
+                Smart accounting. Financial clarity for everyone, everywhere.
               </p>
             </div>
             <FooterCol
