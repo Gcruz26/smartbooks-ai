@@ -20,6 +20,7 @@ import { RevenueChart, CategoryChart } from "@/components/Charts";
 import { TransactionTable } from "@/components/TransactionTable";
 import { AIInsightCard } from "@/components/AIInsightCard";
 import { Button } from "@/components/ui/Button";
+import { useLanguage } from "@/components/LanguageProvider";
 import {
   transactions as allTransactions,
   receipts as allReceipts,
@@ -41,15 +42,20 @@ import {
 
 interface QuickPreset {
   key: QuickPeriodKind;
-  label: string;
+  labelKey:
+    | "this_month"
+    | "last_month"
+    | "this_quarter"
+    | "this_year"
+    | "all_data";
 }
 
 const QUICK_PRESETS: QuickPreset[] = [
-  { key: "this-month", label: "This Month" },
-  { key: "last-month", label: "Last Month" },
-  { key: "this-quarter", label: "This Quarter" },
-  { key: "this-year", label: "This Year" },
-  { key: "all", label: "All Data" },
+  { key: "this-month", labelKey: "this_month" },
+  { key: "last-month", labelKey: "last_month" },
+  { key: "this-quarter", labelKey: "this_quarter" },
+  { key: "this-year", labelKey: "this_year" },
+  { key: "all", labelKey: "all_data" },
 ];
 
 function previousPeriodBounds(
@@ -83,6 +89,7 @@ function pctDelta(
 }
 
 export default function DashboardPage() {
+  const { t } = useLanguage();
   const dataAnchor = useMemo(() => {
     const max = allTransactions.reduce(
       (acc, t) => (acc > t.date ? acc : t.date),
@@ -183,7 +190,11 @@ export default function DashboardPage() {
     [filteredTransactions]
   );
 
-  const periodLabel = getActivePeriodLabel(appliedStart, appliedEnd);
+  const rawPeriodLabel = getActivePeriodLabel(appliedStart, appliedEnd);
+  const periodLabel =
+    rawPeriodLabel === "All Available Data"
+      ? t("all_available_data")
+      : rawPeriodLabel;
 
   function applyDates(start: string | undefined, end: string | undefined) {
     setAppliedStart(start);
@@ -230,13 +241,13 @@ export default function DashboardPage() {
   return (
     <DashboardShell
       title="Dashboard"
-      subtitle="Monitor your business performance for the selected period."
+      subtitle={t("dashboard_subtitle")}
     >
       {/* Header strip: viewing label + quick actions */}
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-base font-medium text-navy-700 ring-1 ring-slate-200 dark:bg-navy-900 dark:text-slate-200 dark:ring-navy-800">
           <Eye className="h-4 w-4 text-sky-500" />
-          <span className="text-slate-500 dark:text-slate-400">Viewing:</span>
+          <span className="text-slate-500 dark:text-slate-400">{t("viewing")}:</span>
           <span className="font-semibold text-navy-900 dark:text-white">
             {periodLabel}
           </span>
@@ -283,7 +294,7 @@ export default function DashboardPage() {
                         : "text-slate-600 hover:bg-white/70 hover:text-navy-900 dark:text-slate-300 dark:hover:bg-navy-700/60 dark:hover:text-white"
                     )}
                   >
-                    {p.label}
+                    {t(p.labelKey)}
                   </button>
                 );
               })}
@@ -299,7 +310,7 @@ export default function DashboardPage() {
               <input
                 id="dash-start"
                 type="date"
-                aria-label="Start date"
+                aria-label={t("start_date")}
                 value={pendingStart}
                 min={dataMin}
                 max={dataMax}
@@ -315,7 +326,7 @@ export default function DashboardPage() {
               <input
                 id="dash-end"
                 type="date"
-                aria-label="End date"
+                aria-label={t("end_date")}
                 value={pendingEnd}
                 min={dataMin}
                 max={dataMax}
@@ -329,14 +340,14 @@ export default function DashboardPage() {
                 onClick={handleClear}
                 className="h-11 rounded-lg border border-slate-200 px-4 text-base font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-navy-900 dark:border-navy-700 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white"
               >
-                Clear
+                {t("clear")}
               </button>
               <button
                 type="button"
                 onClick={handleApply}
                 className="h-11 rounded-lg bg-navy-800 px-5 text-base font-semibold text-white shadow-sm transition hover:bg-navy-700"
               >
-                Apply
+                {t("apply")}
               </button>
             </div>
           </div>
@@ -356,7 +367,7 @@ export default function DashboardPage() {
       {/* Stat cards */}
       <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Total Income"
+          label={t("total_income")}
           value={formatCurrency(summary.totalIncome)}
           icon={TrendingUp}
           accent="green"
@@ -364,7 +375,7 @@ export default function DashboardPage() {
           delay={0}
         />
         <StatCard
-          label="Total Expenses"
+          label={t("total_expenses")}
           value={formatCurrency(summary.totalExpenses)}
           icon={TrendingDown}
           accent="red"
@@ -376,7 +387,7 @@ export default function DashboardPage() {
           delay={60}
         />
         <StatCard
-          label="Net Profit"
+          label={t("net_profit")}
           value={formatCurrency(summary.netProfit)}
           icon={Wallet}
           accent="navy"
@@ -384,7 +395,7 @@ export default function DashboardPage() {
           delay={120}
         />
         <StatCard
-          label="Receipts Uploaded"
+          label={t("receipts_uploaded")}
           value={String(summary.receiptCount)}
           icon={ReceiptText}
           accent="sky"
@@ -395,13 +406,13 @@ export default function DashboardPage() {
       {/* Charts */}
       <div className="mt-7 grid gap-6 lg:grid-cols-3">
         <ChartCard
-          title="Monthly Revenue"
+          title={t("monthly_revenue")}
           subtitle={periodLabel}
           className="lg:col-span-2"
           action={
             <Link href="/reports">
               <Button variant="ghost" size="sm">
-                View reports
+                {t("view_reports")}
               </Button>
             </Link>
           }
@@ -409,7 +420,7 @@ export default function DashboardPage() {
           <RevenueChart data={monthlyRows} />
         </ChartCard>
 
-        <ChartCard title="Expenses by Category" subtitle={periodLabel}>
+        <ChartCard title={t("expenses_by_category")} subtitle={periodLabel}>
           <CategoryChart data={categoryData} />
         </ChartCard>
       </div>
@@ -420,10 +431,10 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5 dark:border-navy-800">
             <div>
               <h3 className="font-display text-lg font-bold text-navy-900 dark:text-white">
-                Recent Transactions
+                {t("recent_transactions")}
               </h3>
               <p className="mt-1 text-base text-slate-500 dark:text-slate-400">
-                Showing {recent.length} of {filteredTransactions.length} in this period
+                {t("showing_n_of_m", { n: recent.length, m: filteredTransactions.length })}
               </p>
             </div>
             <Link href="/transactions">

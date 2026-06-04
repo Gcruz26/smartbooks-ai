@@ -16,32 +16,37 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/components/LanguageProvider";
+import type { TranslationKey } from "@/lib/i18n";
 
-const navSections: {
-  title?: string;
-  items: { href: string; label: string; icon: typeof LayoutDashboard }[];
-}[] = [
+interface NavItem {
+  href: string;
+  labelKey: TranslationKey;
+  icon: typeof LayoutDashboard;
+}
+
+const navSections: { titleKey?: TranslationKey; items: NavItem[] }[] = [
   {
-    title: "Overview",
+    titleKey: "section_overview",
     items: [
-      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/dashboard", labelKey: "nav_dashboard", icon: LayoutDashboard },
     ],
   },
   {
-    title: "Finance",
+    titleKey: "section_finance",
     items: [
-      { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
-      { href: "/receipts", label: "Receipts", icon: ReceiptText },
-      { href: "/reports", label: "Reports", icon: BarChart3 },
+      { href: "/transactions", labelKey: "nav_transactions", icon: ArrowLeftRight },
+      { href: "/receipts", labelKey: "nav_receipts", icon: ReceiptText },
+      { href: "/reports", labelKey: "nav_reports", icon: BarChart3 },
     ],
   },
   {
-    title: "Business",
+    titleKey: "section_business",
     items: [
-      { href: "/clients", label: "Clients", icon: Users },
-      { href: "/users", label: "Users", icon: UserCog },
-      { href: "/pricing", label: "Pricing", icon: Tag },
-      { href: "/settings", label: "Settings", icon: Settings },
+      { href: "/clients", labelKey: "nav_clients", icon: Users },
+      { href: "/users", labelKey: "nav_users", icon: UserCog },
+      { href: "/pricing", labelKey: "nav_pricing", icon: Tag },
+      { href: "/settings", labelKey: "nav_settings", icon: Settings },
     ],
   },
 ];
@@ -53,6 +58,7 @@ interface SidebarProps {
 
 export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   return (
     <>
@@ -70,7 +76,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Brand */}
         <div className="flex h-24 shrink-0 items-center justify-between px-6">
           <Link href="/dashboard" className="flex items-center gap-3">
             <span className="grid h-11 w-11 place-items-center rounded-xl bg-navy-800 text-white">
@@ -84,23 +89,22 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <button
             onClick={onClose}
             className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-navy-800 lg:hidden"
-            aria-label="Close menu"
+            aria-label={t("close_menu")}
           >
             <X className="h-6 w-6" />
           </button>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 overflow-y-auto px-4 py-3">
           {navSections.map((section, sIdx) => (
-            <div key={section.title ?? sIdx} className={sIdx > 0 ? "mt-5" : ""}>
-              {section.title && (
+            <div key={section.titleKey ?? sIdx} className={sIdx > 0 ? "mt-5" : ""}>
+              {section.titleKey && (
                 <p className="mb-2 px-3 text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  {section.title}
+                  {t(section.titleKey)}
                 </p>
               )}
               <div className="space-y-1">
-                {section.items.map(({ href, label, icon: Icon }) => {
+                {section.items.map(({ href, labelKey, icon: Icon }) => {
                   const active = pathname === href;
                   return (
                     <Link
@@ -122,7 +126,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                             : "text-slate-400 group-hover:text-navy-700 dark:group-hover:text-slate-100"
                         )}
                       />
-                      {label}
+                      {t(labelKey)}
                     </Link>
                   );
                 })}
@@ -131,20 +135,17 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           ))}
         </nav>
 
-        {/* Compact upgrade card */}
         <div className="m-3 shrink-0 rounded-xl bg-navy-800 px-4 py-3 text-white">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-sky-300" />
-            <p className="text-base font-semibold">Upgrade to Pro</p>
+            <p className="text-base font-semibold">{t("upgrade_to_pro")}</p>
           </div>
-          <p className="mt-1 text-sm text-slate-300">
-            Unlock AI classification and monthly reports.
-          </p>
+          <p className="mt-1 text-sm text-slate-300">{t("upgrade_blurb")}</p>
           <Link
             href="/pricing"
             className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white transition hover:border-sky-300/40 hover:bg-white/15"
           >
-            View plans
+            {t("view_plans")}
           </Link>
         </div>
       </aside>

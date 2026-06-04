@@ -21,8 +21,8 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
 }
 
 /** Format a number as USD currency. */
-export function formatCurrency(amount: number, currency = "USD"): string {
-  return new Intl.NumberFormat("en-US", {
+export function formatCurrency(amount: number, currency = "CVE"): string {
+  return new Intl.NumberFormat("pt-CV", {
     style: "currency",
     currency,
     minimumFractionDigits: 2,
@@ -32,9 +32,9 @@ export function formatCurrency(amount: number, currency = "USD"): string {
 
 /** Compact currency for tight spaces. */
 export function formatCompactCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("pt-CV", {
     style: "currency",
-    currency: "USD",
+    currency: "CVE",
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(amount);

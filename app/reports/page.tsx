@@ -42,6 +42,7 @@ import {
   documentTypeLabels,
 } from "@/lib/accounting";
 import { Badge } from "@/components/ui/Badge";
+import { useLanguage } from "@/components/LanguageProvider";
 
 type Status =
   | { type: "idle" }
@@ -51,6 +52,7 @@ type Status =
   | { type: "error"; message: string };
 
 export default function ReportsPage() {
+  const { t, language } = useLanguage();
   // Derive the available data range so the date inputs can offer sensible
   // min/max bounds (and so "All Available Data" can show a real period).
   const dataMin = useMemo(
@@ -139,6 +141,7 @@ export default function ReportsPage() {
       monthlyRows,
       categoryRows: categoryData,
       transactions: filteredTransactions,
+      language,
     };
   }
 
@@ -187,8 +190,8 @@ export default function ReportsPage() {
 
   return (
     <DashboardShell
-      title="Reports"
-      subtitle="Profit & loss, trends, and category breakdowns"
+      title={t("reports_title")}
+      subtitle={t("reports_subtitle")}
     >
       {/* Filter bar */}
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card dark:border-navy-800 dark:bg-navy-900">
@@ -246,10 +249,10 @@ export default function ReportsPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button variant="outline" onClick={handleClear} type="button">
-              Clear Filter
+              {t("clear_filter")}
             </Button>
             <Button onClick={handleApply} type="button">
-              Apply Filter
+              {t("apply_filter")}
             </Button>
           </div>
         </div>
@@ -297,12 +300,12 @@ export default function ReportsPage() {
             {status.type === "pdf-loading" ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Generating PDF...
+                {t("export_pdf")}...
               </>
             ) : (
               <>
                 <FileDown className="h-5 w-5" />
-                Export PDF
+                {t("export_pdf")}
               </>
             )}
           </Button>
@@ -315,12 +318,12 @@ export default function ReportsPage() {
             {status.type === "excel-loading" ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Generating Excel...
+                {t("export_excel")}...
               </>
             ) : (
               <>
                 <FileSpreadsheet className="h-5 w-5" />
-                Export Excel
+                {t("export_excel")}
               </>
             )}
           </Button>
@@ -340,25 +343,25 @@ export default function ReportsPage() {
       {/* P&L summary cards */}
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Total Income"
+          label={t("total_income")}
           value={formatCurrency(totalIncome)}
           icon={TrendingUp}
           accent="green"
         />
         <StatCard
-          label="Total Expenses"
+          label={t("total_expenses")}
           value={formatCurrency(totalExpenses)}
           icon={TrendingDown}
           accent="red"
         />
         <StatCard
-          label="Net Profit"
+          label={t("net_profit")}
           value={formatCurrency(profit)}
           icon={Wallet}
           accent="navy"
         />
         <StatCard
-          label="Profit Margin"
+          label={t("profit_margin")}
           value={`${margin.toFixed(1)}%`}
           icon={TrendingUp}
           accent="sky"
@@ -383,7 +386,7 @@ export default function ReportsPage() {
       <div className="mt-8 rounded-2xl border border-slate-200 bg-white shadow-card dark:border-navy-800 dark:bg-navy-900">
         <div className="border-b border-slate-100 px-6 py-5 dark:border-navy-800">
           <h3 className="font-display text-xl font-bold text-navy-900 dark:text-white">
-            Document Summary
+            {t("document_summary")}
           </h3>
           <p className="mt-1 text-base text-slate-500 dark:text-slate-400">
             Count of accounting documents in this period
@@ -410,7 +413,7 @@ export default function ReportsPage() {
       <div className="mt-8 rounded-2xl border border-slate-200 bg-white shadow-card dark:border-navy-800 dark:bg-navy-900">
         <div className="border-b border-slate-100 px-6 py-5 dark:border-navy-800">
           <h3 className="font-display text-lg font-bold text-navy-900 dark:text-white">
-            Monthly Financial Summary
+            {t("monthly_summary")}
           </h3>
           <p className="mt-1 text-base text-slate-500 dark:text-slate-400">
             Profit and loss by month

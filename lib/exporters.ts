@@ -25,7 +25,90 @@ export interface ReportExportData {
   monthlyRows: MonthlyReportRow[];
   categoryRows: CategoryBreakdown[];
   transactions: Transaction[];
+  /** Language used for export labels. */
+  language?: "en" | "pt";
 }
+
+const EXPORT_LABELS = {
+  en: {
+    title: "SmartBooks AI",
+    report: "Financial Report",
+    period: "Period",
+    summary: "Summary",
+    metric: "Metric",
+    value: "Value",
+    totalIncome: "Total Income",
+    totalExpenses: "Total Expenses",
+    netProfit: "Net Profit",
+    profitMargin: "Profit Margin",
+    monthlySummary: "Monthly Summary",
+    month: "Month",
+    income: "Income",
+    expenses: "Expenses",
+    profit: "Profit",
+    total: "Total",
+    expenseCategories: "Expense Categories",
+    category: "Category",
+    amount: "Amount",
+    share: "Share",
+    noData: "No data in selected range",
+    noExpenses: "No expenses in selected range",
+    generated: "Generated",
+    pageOf: (i: number, n: number) => `Page ${i} of ${n}`,
+    transactionType: "Transaction Type",
+    documentType: "Document Type",
+    description: "Description",
+    client: "Client",
+    paymentMethod: "Payment Method",
+    status: "Status",
+    date: "Date",
+    sheetSummary: "Summary",
+    sheetTransactions: "Transactions",
+    sheetExpenseCategories: "Expense Categories",
+    sheetMonthlySummary: "Monthly Summary",
+    shareLabel: "Share of Expenses (%)",
+    profitMarginPct: "Profit Margin (%)",
+  },
+  pt: {
+    title: "SmartBooks AI",
+    report: "Relatorio Financeiro",
+    period: "Periodo",
+    summary: "Resumo",
+    metric: "Metrica",
+    value: "Valor",
+    totalIncome: "Receita Total",
+    totalExpenses: "Despesas Totais",
+    netProfit: "Lucro Liquido",
+    profitMargin: "Margem de Lucro",
+    monthlySummary: "Resumo Mensal",
+    month: "Mes",
+    income: "Receita",
+    expenses: "Despesas",
+    profit: "Lucro",
+    total: "Total",
+    expenseCategories: "Categorias de Despesa",
+    category: "Categoria",
+    amount: "Valor",
+    share: "Quota",
+    noData: "Sem dados no periodo selecionado",
+    noExpenses: "Sem despesas no periodo selecionado",
+    generated: "Gerado",
+    pageOf: (i: number, n: number) => `Pagina ${i} de ${n}`,
+    transactionType: "Tipo de Transacao",
+    documentType: "Tipo de Documento",
+    description: "Descricao",
+    client: "Cliente",
+    paymentMethod: "Metodo de Pagamento",
+    status: "Estado",
+    date: "Data",
+    sheetSummary: "Resumo",
+    sheetTransactions: "Transacoes",
+    sheetExpenseCategories: "Categorias de Despesa",
+    sheetMonthlySummary: "Resumo Mensal",
+    shareLabel: "Quota de Despesas (%)",
+    profitMarginPct: "Margem de Lucro (%)",
+  },
+} as const;
 
 /** Build a filename like SmartBooks_AI_Financial_Report_2026-01-01_to_2026-01-31.<ext> */
 export function buildExportFileName(
@@ -67,35 +150,37 @@ export async function exportPdf(data: ReportExportData): Promise<void> {
   doc.setFillColor(22, 38, 79); // navy-800
   doc.rect(0, 0, pageWidth, 90, "F");
 
+  const L = EXPORT_LABELS[data.language ?? "en"];
+
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
-  doc.text("SmartBooks AI", 40, 42);
+  doc.text(L.title, 40, 42);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
-  doc.text("Financial Report", 40, 62);
+  doc.text(L.report, 40, 62);
 
   doc.setFontSize(10);
   doc.setTextColor(195, 210, 240);
-  doc.text(`Period: ${data.periodLabel}`, 40, 78);
+  doc.text(`${L.period}: ${data.periodLabel}`, 40, 78);
 
   // Summary block
   doc.setTextColor(15, 27, 58);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.text("Summary", 40, 130);
+  doc.text(L.summary, 40, 130);
 
   const summaryRows: [string, string][] = [
-    ["Total Income", formatCurrency(data.totalIncome)],
-    ["Total Expenses", formatCurrency(data.totalExpenses)],
-    ["Net Profit", formatCurrency(data.netProfit)],
-    ["Profit Margin", `${data.profitMargin.toFixed(1)}%`],
+    [L.totalIncome, formatCurrency(data.totalIncome)],
+    [L.totalExpenses, formatCurrency(data.totalExpenses)],
+    [L.netProfit, formatCurrency(data.netProfit)],
+    [L.profitMargin, `${data.profitMargin.toFixed(1)}%`],
   ];
 
   autoTable(doc, {
     startY: 140,
-    head: [["Metric", "Value"]],
+    head: [[L.metric, L.value]],
     body: summaryRows,
     theme: "grid",
     styles: { fontSize: 11, cellPadding: 8 },
@@ -115,7 +200,7 @@ export async function exportPdf(data: ReportExportData): Promise<void> {
   let cursorY: number = ((doc as unknown as { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY ?? 220) + 30;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.text("Monthly Summary", 40, cursorY);
+  doc.text(L.monthlySummary, 40, cursorY);
 
   const monthlyBody = data.monthlyRows.length
     ? data.monthlyRows.map((r) => [
@@ -124,11 +209,11 @@ export async function exportPdf(data: ReportExportData): Promise<void> {
         formatCurrency(r.expenses),
         formatCurrency(r.profit),
       ])
-    : [["No data in selected range", "-", "-", "-"]];
+    : [[L.noData, "-", "-", "-"]];
 
   // Totals footer row
   const totalsRow = [
-    "Total",
+    L.total,
     formatCurrency(data.totalIncome),
     formatCurrency(data.totalExpenses),
     formatCurrency(data.netProfit),
@@ -136,7 +221,7 @@ export async function exportPdf(data: ReportExportData): Promise<void> {
 
   autoTable(doc, {
     startY: cursorY + 10,
-    head: [["Month", "Income", "Expenses", "Profit"]],
+    head: [[L.month, L.income, L.expenses, L.profit]],
     body: monthlyBody,
     foot: [totalsRow],
     theme: "striped",
@@ -164,7 +249,7 @@ export async function exportPdf(data: ReportExportData): Promise<void> {
   cursorY = ((doc as unknown as { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY ?? cursorY + 100) + 30;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.text("Expense Categories", 40, cursorY);
+  doc.text(L.expenseCategories, 40, cursorY);
 
   const categoryBody = data.categoryRows.length
     ? data.categoryRows.map((c) => {
@@ -174,11 +259,11 @@ export async function exportPdf(data: ReportExportData): Promise<void> {
             : "-";
         return [c.category, formatCurrency(c.amount), share];
       })
-    : [["No expenses in selected range", "-", "-"]];
+    : [[L.noExpenses, "-", "-"]];
 
   autoTable(doc, {
     startY: cursorY + 10,
-    head: [["Category", "Amount", "Share"]],
+    head: [[L.category, L.amount, L.share]],
     body: categoryBody,
     theme: "striped",
     styles: { fontSize: 10, cellPadding: 7 },
@@ -201,12 +286,12 @@ export async function exportPdf(data: ReportExportData): Promise<void> {
     doc.setFontSize(9);
     doc.setTextColor(120, 130, 150);
     doc.text(
-      `Generated ${generatedAt}`,
+      `${L.generated} ${generatedAt}`,
       40,
       doc.internal.pageSize.getHeight() - 24
     );
     doc.text(
-      `Page ${i} of ${pageCount}`,
+      L.pageOf(i, pageCount),
       pageWidth - 40,
       doc.internal.pageSize.getHeight() - 24,
       { align: "right" }
@@ -221,33 +306,35 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
   const XLSX = await import("xlsx");
   const wb = XLSX.utils.book_new();
 
+  const L = EXPORT_LABELS[data.language ?? "en"];
+
   // 1) Summary sheet
   const summaryAOA: (string | number)[][] = [
-    ["SmartBooks AI - Financial Report"],
-    ["Period", data.periodLabel],
-    ["Generated", new Date().toLocaleString("en-US")],
+    [`${L.title} - ${L.report}`],
+    [L.period, data.periodLabel],
+    [L.generated, new Date().toLocaleString(data.language === "pt" ? "pt-PT" : "en-US")],
     [],
-    ["Metric", "Value"],
-    ["Total Income", data.totalIncome],
-    ["Total Expenses", data.totalExpenses],
-    ["Net Profit", data.netProfit],
-    ["Profit Margin (%)", Number(data.profitMargin.toFixed(2))],
+    [L.metric, L.value],
+    [L.totalIncome, data.totalIncome],
+    [L.totalExpenses, data.totalExpenses],
+    [L.netProfit, data.netProfit],
+    [L.profitMarginPct, Number(data.profitMargin.toFixed(2))],
   ];
   const wsSummary = XLSX.utils.aoa_to_sheet(summaryAOA);
   wsSummary["!cols"] = [{ wch: 26 }, { wch: 22 }];
-  XLSX.utils.book_append_sheet(wb, wsSummary, "Summary");
+  XLSX.utils.book_append_sheet(wb, wsSummary, L.sheetSummary);
 
   // 2) Transactions sheet
   const txHeader = [
-    "Date",
-    "Transaction Type",
-    "Document Type",
-    "Category",
-    "Description",
-    "Client",
-    "Payment Method",
-    "Status",
-    "Amount",
+    L.date,
+    L.transactionType,
+    L.documentType,
+    L.category,
+    L.description,
+    L.client,
+    L.paymentMethod,
+    L.status,
+    L.amount,
   ];
   const txRows = data.transactions.map((t) => [
     t.date,
@@ -272,10 +359,10 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
     { wch: 10 }, // status
     { wch: 12 }, // amount
   ];
-  XLSX.utils.book_append_sheet(wb, wsTx, "Transactions");
+  XLSX.utils.book_append_sheet(wb, wsTx, L.sheetTransactions);
 
   // 3) Expense Categories sheet
-  const catHeader = ["Category", "Amount", "Share of Expenses (%)"];
+  const catHeader = [L.category, L.amount, L.shareLabel];
   const catRows = data.categoryRows.map((c) => [
     c.category,
     c.amount,
@@ -285,10 +372,10 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
   ]);
   const wsCat = XLSX.utils.aoa_to_sheet([catHeader, ...catRows]);
   wsCat["!cols"] = [{ wch: 22 }, { wch: 14 }, { wch: 22 }];
-  XLSX.utils.book_append_sheet(wb, wsCat, "Expense Categories");
+  XLSX.utils.book_append_sheet(wb, wsCat, L.sheetExpenseCategories);
 
   // 4) Monthly Summary sheet
-  const mHeader = ["Month", "Income", "Expenses", "Profit"];
+  const mHeader = [L.month, L.income, L.expenses, L.profit];
   const mRows = data.monthlyRows.map((r) => [
     r.month,
     r.income,
@@ -296,7 +383,7 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
     r.profit,
   ]);
   const mTotals = [
-    "Total",
+    L.total,
     data.totalIncome,
     data.totalExpenses,
     data.netProfit,
@@ -308,7 +395,7 @@ export async function exportExcel(data: ReportExportData): Promise<void> {
     { wch: 14 },
     { wch: 14 },
   ];
-  XLSX.utils.book_append_sheet(wb, wsMonthly, "Monthly Summary");
+  XLSX.utils.book_append_sheet(wb, wsMonthly, L.sheetMonthlySummary);
 
   XLSX.writeFile(wb, buildExportFileName(data, "xlsx"));
 }

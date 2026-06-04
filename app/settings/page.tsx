@@ -15,6 +15,9 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { business } from "@/lib/mockData";
+import { useLanguage } from "@/components/LanguageProvider";
+import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
+import { Globe } from "lucide-react";
 
 const currencyOptions = [
   { value: "USD", label: "USD - US Dollar ($)" },
@@ -118,6 +121,7 @@ function SectionCard({
 }
 
 export default function SettingsPage() {
+  const { t, language, setLanguage } = useLanguage();
   const [form, setForm] = useState({
     name: business.name,
     ownerName: business.ownerName,
@@ -149,44 +153,44 @@ export default function SettingsPage() {
 
   return (
     <DashboardShell
-      title="Settings"
-      subtitle="Manage your business profile and preferences"
+      title={t("settings_title")}
+      subtitle={t("settings_subtitle")}
     >
       <form onSubmit={handleSave} className="max-w-3xl space-y-7">
         <SectionCard
           icon={Building2}
-          title="Business profile"
+          title={t("business_profile")}
           description="This information appears on your reports and invoices."
         >
           <div className="grid gap-5 sm:grid-cols-2">
             <Input
               id="name"
-              label="Business name"
+              label={t("business_name")}
               value={form.name}
               onChange={(e) => update("name", e.target.value)}
             />
             <Input
               id="ownerName"
-              label="Owner name"
+              label={t("owner_name")}
               value={form.ownerName}
               onChange={(e) => update("ownerName", e.target.value)}
             />
             <Input
               id="email"
               type="email"
-              label="Email address"
+              label={t("email")}
               value={form.email}
               onChange={(e) => update("email", e.target.value)}
             />
             <Input
               id="taxId"
-              label="Tax identification number"
+              label={t("tax_id")}
               value={form.taxId}
               onChange={(e) => update("taxId", e.target.value)}
             />
             <Select
               id="currency"
-              label="Currency"
+              label={t("currency")}
               options={currencyOptions}
               value={form.currency}
               onChange={(e) => update("currency", e.target.value)}
@@ -203,7 +207,7 @@ export default function SettingsPage() {
 
         <SectionCard
           icon={Bell}
-          title="Notification preferences"
+          title={t("notification_prefs")}
           description="Choose which alerts SmartBooks AI sends you."
         >
           <div className="divide-y divide-slate-100 dark:divide-navy-800">
@@ -226,6 +230,43 @@ export default function SettingsPage() {
                 />
               </div>
             ))}
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          icon={Globe}
+          title={t("interface_language")}
+          description={t("interface_language_help")}
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
+            {SUPPORTED_LANGUAGES.map((opt) => {
+              const active = language === opt.code;
+              return (
+                <button
+                  key={opt.code}
+                  type="button"
+                  onClick={() => setLanguage(opt.code)}
+                  className={
+                    "flex items-center justify-between gap-3 rounded-xl border p-4 text-left transition " +
+                    (active
+                      ? "border-navy-800 bg-navy-50 ring-2 ring-navy-800/30 dark:border-sky-400/50 dark:bg-navy-800/60"
+                      : "border-slate-200 bg-white hover:border-navy-300 dark:border-navy-700 dark:bg-navy-900 dark:hover:border-sky-500/40")
+                  }
+                >
+                  <div>
+                    <p className="font-display text-lg font-bold text-navy-900 dark:text-white">
+                      {opt.label}
+                    </p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      {opt.code.toUpperCase()}
+                    </p>
+                  </div>
+                  {active && (
+                    <Check className="h-5 w-5 text-sky-600 dark:text-sky-300" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </SectionCard>
 

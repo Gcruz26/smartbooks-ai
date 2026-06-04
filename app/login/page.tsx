@@ -6,10 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Sparkles, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useLanguage } from "@/components/LanguageProvider";
 import { currentUser, demoPassword } from "@/lib/mockData";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -46,7 +48,7 @@ export default function LoginPage() {
 
           <div className="max-w-md">
             <h2 className="font-display text-4xl font-bold leading-tight text-white sm:text-5xl">
-              Smart accounting. <span className="text-sky-300">Financial clarity</span> for everyone, everywhere.
+              {t("slogan_login_a")} <span className="text-sky-300">{t("slogan_login_b")}</span> {t("slogan_login_c")}
             </h2>
             <p className="mt-5 text-xl text-slate-300">
               Track income and expenses, scan receipts with AI, and generate

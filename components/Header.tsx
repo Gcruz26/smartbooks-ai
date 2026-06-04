@@ -14,8 +14,14 @@ import {
   UserPlus,
   TrendingUp,
   CheckCheck,
+  Globe,
+  Check,
+  ChevronDown,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import { useLanguage } from "@/components/LanguageProvider";
+import { SUPPORTED_LANGUAGES, languageLabels } from "@/lib/i18n";
+import type { Language } from "@/lib/i18n";
 import { currentUser } from "@/lib/mockData";
 import {
   mockNotifications,
@@ -43,26 +49,30 @@ const TYPE_ICONS: Record<NotificationType, typeof Bell> = {
 
 export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
   const [notifications, setNotifications] =
     useState<AppNotification[]>(mockNotifications);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
 
   const unreadCount = getUnreadNotificationsCount(notifications);
 
-  // Close the dropdown when clicking outside or pressing Escape.
   useEffect(() => {
-    if (!dropdownOpen) return;
+    if (!notifOpen && !langOpen) return;
     function onDocClick(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setDropdownOpen(false);
-      }
+      const target = e.target as Node;
+      if (notifOpen && notifRef.current && !notifRef.current.contains(target))
+        setNotifOpen(false);
+      if (langOpen && langRef.current && !langRef.current.contains(target))
+        setLangOpen(false);
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setDropdownOpen(false);
+      if (e.key === "Escape") {
+        setNotifOpen(false);
+        setLangOpen(false);
+      }
     }
     document.addEventListener("mousedown", onDocClick);
     document.addEventListener("keydown", onKey);
@@ -70,14 +80,17 @@ export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
       document.removeEventListener("mousedown", onDocClick);
       document.removeEventListener("keydown", onKey);
     };
-  }, [dropdownOpen]);
+  }, [notifOpen, langOpen]);
 
   function handleMarkAllAsRead() {
     setNotifications((prev) => markAllNotificationsAsRead(prev));
   }
-
   function handleMarkOneAsRead(id: string) {
     setNotifications((prev) => markOneNotificationAsRead(prev, id));
+  }
+  function pickLanguage(next: Language) {
+    setLanguage(next);
+    setLangOpen(false);
   }
 
   return (
@@ -85,7 +98,7 @@ export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
       <button
         onClick={onMenuClick}
         className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-navy-800 lg:hidden"
-        aria-label="Open menu"
+        aria-label={t("open_menu")}
       >
         <Menu className="h-6 w-6" />
       </button>
@@ -106,10 +119,55 @@ export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
         <Search className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
         <input
           type="search"
-          placeholder="Search..."
-          aria-label="Search"
+          placeholder={t("search_placeholder")}
+          aria-label={t("search_placeholder")}
           className="h-12 w-56 rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-base text-navy-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-100"
         />
+      </div>
+
+      {/* Language switcher */}
+      <div ref={langRef} className="relative">
+        <button
+          type="button"
+          onClick={() => setLangOpen((s) => !s)}
+          aria-haspopup="true"
+          aria-expanded={langOpen}
+          aria-label={t("language")}
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-navy-800 transition hover:bg-slate-50 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-100 dark:hover:bg-navy-800"
+        >
+          <Globe className="h-5 w-5 text-sky-500" />
+          <span className="hidden sm:inline">{languageLabels[language]}</span>
+          <span className="sm:hidden">{language.toUpperCase()}</span>
+          <ChevronDown className="h-4 w-4 text-slate-400" />
+        </button>
+        {langOpen && (
+          <div className="animate-fade-in absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-card-hover dark:border-navy-800 dark:bg-navy-900">
+            <p className="border-b border-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:border-navy-800">
+              {t("language")}
+            </p>
+            {SUPPORTED_LANGUAGES.map((opt) => {
+              const active = opt.code === language;
+              return (
+                <button
+                  key={opt.code}
+                  type="button"
+                  onClick={() => pickLanguage(opt.code)}
+                  className={
+                    "flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left text-base transition " +
+                    (active
+                      ? "bg-sky-50 font-semibold text-navy-900 dark:bg-sky-500/10 dark:text-white"
+                      : "text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-navy-800")
+                  }
+                >
+                  <span>{opt.label}</span>
+                  {active && (
+                    <Check className="h-4 w-4 text-sky-600 dark:text-sky-300" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <button
@@ -125,36 +183,33 @@ export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
       </button>
 
       {/* Notification bell + dropdown */}
-      <div
-        ref={dropdownRef}
-        className="relative hidden sm:inline-flex"
-      >
+      <div ref={notifRef} className="relative hidden sm:inline-flex">
         <button
           type="button"
-          onClick={() => setDropdownOpen((s) => !s)}
-          aria-label="Notifications"
+          onClick={() => setNotifOpen((s) => !s)}
+          aria-label={t("notifications")}
           aria-haspopup="true"
-          aria-expanded={dropdownOpen}
+          aria-expanded={notifOpen}
           className="relative rounded-xl p-3 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-navy-800"
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span
               className="absolute right-2.5 top-2.5 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-sky-500 px-1 text-[10px] font-bold text-white ring-2 ring-white dark:ring-navy-950"
-              aria-label={`${unreadCount} unread notifications`}
+              aria-label={t("unread_n", { n: unreadCount })}
             >
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </button>
 
-        {dropdownOpen && (
+        {notifOpen && (
           <NotificationsPanel
             notifications={notifications}
             unreadCount={unreadCount}
             onMarkAllRead={handleMarkAllAsRead}
             onMarkOneRead={handleMarkOneAsRead}
-            onClose={() => setDropdownOpen(false)}
+            onClose={() => setNotifOpen(false)}
           />
         )}
       </div>
@@ -183,7 +238,7 @@ export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Dropdown panel                                                      */
+/*  Notifications panel                                                 */
 /* ------------------------------------------------------------------ */
 
 interface NotificationsPanelProps {
@@ -201,22 +256,23 @@ function NotificationsPanel({
   onMarkOneRead,
   onClose,
 }: NotificationsPanelProps) {
+  const { t } = useLanguage();
+
   return (
     <div
       role="dialog"
-      aria-label="Notifications"
+      aria-label={t("notifications")}
       className="animate-fade-in absolute right-0 top-full z-50 mt-2 w-[22rem] max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card-hover dark:border-navy-800 dark:bg-navy-900 sm:w-[24rem]"
     >
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-navy-800">
         <div>
           <p className="font-display text-lg font-bold text-navy-900 dark:text-white">
-            Notifications
+            {t("notifications")}
           </p>
           <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
             {unreadCount > 0
-              ? `${unreadCount} unread`
-              : "You're all caught up"}
+              ? t("unread_n", { n: unreadCount })
+              : t("youre_caught_up")}
           </p>
         </div>
         {unreadCount > 0 && (
@@ -226,19 +282,18 @@ function NotificationsPanel({
             className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold text-sky-700 transition hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-500/10"
           >
             <CheckCheck className="h-4 w-4" />
-            Mark all as read
+            {t("mark_all_read")}
           </button>
         )}
       </div>
 
-      {/* List */}
       {notifications.length === 0 ? (
         <div className="px-6 py-10 text-center">
           <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-navy-800 dark:text-slate-500">
             <Bell className="h-6 w-6" />
           </span>
           <p className="mt-3 text-base font-medium text-navy-900 dark:text-white">
-            No notifications at the moment.
+            {t("no_notifications")}
           </p>
         </div>
       ) : (
@@ -309,7 +364,6 @@ function NotificationsPanel({
         </ul>
       )}
 
-      {/* Footer */}
       {notifications.length > 0 && (
         <div className="border-t border-slate-100 px-5 py-3 text-center dark:border-navy-800">
           <button
@@ -317,7 +371,7 @@ function NotificationsPanel({
             onClick={onClose}
             className="text-sm font-semibold text-navy-800 hover:underline dark:text-sky-300"
           >
-            View all
+            {t("view_all")}
           </button>
         </div>
       )}
