@@ -2,6 +2,7 @@
 
 // components/Sidebar.tsx
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -76,15 +77,9 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-24 shrink-0 items-center justify-between px-6">
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center rounded-xl bg-navy-800 text-white">
-              <Sparkles className="h-6 w-6" />
-            </span>
-            <span className="font-display text-2xl font-bold tracking-tight text-navy-900 dark:text-white">
-              SmartBooks
-              <span className="text-sky-500"> AI</span>
-            </span>
+        <div className="flex h-32 shrink-0 items-center justify-between px-5">
+          <Link href="/dashboard" aria-label="SmartBooks AI" className="inline-flex">
+            <BrandLogo size="sidebar" priority />
           </Link>
           <button
             onClick={onClose}

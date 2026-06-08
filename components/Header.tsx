@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useLanguage } from "@/components/LanguageProvider";
-import { SUPPORTED_LANGUAGES, languageLabels } from "@/lib/i18n";
+import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import type { Language } from "@/lib/i18n";
 import { currentUser } from "@/lib/mockData";
 import {
@@ -114,8 +114,8 @@ export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
         )}
       </div>
 
-      {/* Search (desktop) */}
-      <div className="relative hidden lg:block">
+      {/* Search (desktop XL only) */}
+      <div className="relative hidden xl:block">
         <Search className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
         <input
           type="search"
@@ -133,11 +133,10 @@ export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
           aria-haspopup="true"
           aria-expanded={langOpen}
           aria-label={t("language")}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-navy-800 transition hover:bg-slate-50 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-100 dark:hover:bg-navy-800"
+          className="inline-flex h-11 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2.5 text-base font-semibold text-navy-800 transition hover:bg-slate-50 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-100 dark:hover:bg-navy-800"
         >
           <Globe className="h-5 w-5 text-sky-500" />
-          <span className="hidden sm:inline">{languageLabels[language]}</span>
-          <span className="sm:hidden">{language.toUpperCase()}</span>
+          <span className="font-mono">{language.toUpperCase()}</span>
           <ChevronDown className="h-4 w-4 text-slate-400" />
         </button>
         {langOpen && (

@@ -9,6 +9,12 @@ export const metadata: Metadata = {
     "SmartBooks AI - Smart accounting. Financial clarity for everyone, everywhere.",
   description:
     "SmartBooks AI brings smart accounting and financial clarity to small businesses, freelancers, and entrepreneurs - everyone, everywhere.",
+  icons: {
+    icon: [
+      { url: "/smartbooks-logo.png", type: "image/png" },
+    ],
+    apple: "/smartbooks-logo.png",
+  },
 };
 
 export default function RootLayout({

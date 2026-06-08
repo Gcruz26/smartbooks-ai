@@ -20,24 +20,27 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
-/** Format a number as USD currency. */
+/**
+ * Format a number as currency in the form "CVE 24,801.50".
+ * We deliberately avoid the locale-default formatting because some locales
+ * (notably pt-CV) interleave the currency symbol mid-number (e.g. 24 801$50),
+ * which is hard to read at a glance in a finance dashboard.
+ */
 export function formatCurrency(amount: number, currency = "CVE"): string {
-  return new Intl.NumberFormat("pt-CV", {
-    style: "currency",
-    currency,
+  const number = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount);
+  return `${currency} ${number}`;
 }
 
-/** Compact currency for tight spaces. */
-export function formatCompactCurrency(amount: number): string {
-  return new Intl.NumberFormat("pt-CV", {
-    style: "currency",
-    currency: "CVE",
+/** Compact currency for tight spaces, e.g. "CVE 24.8K". */
+export function formatCompactCurrency(amount: number, currency = "CVE"): string {
+  const number = new Intl.NumberFormat("en-US", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(amount);
+  return `${currency} ${number}`;
 }
 
 /** Format an ISO date string into a readable form. */

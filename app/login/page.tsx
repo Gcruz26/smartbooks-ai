@@ -3,6 +3,7 @@
 // app/login/page.tsx
 import { useState } from "react";
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useRouter } from "next/navigation";
 import { Sparkles, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -37,13 +38,8 @@ export default function LoginPage() {
         <div className="pointer-events-none absolute -right-20 top-20 h-72 w-72 rounded-full bg-sky-500/20 blur-3xl" />
         <div className="pointer-events-none absolute bottom-10 left-10 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
         <div className="relative flex h-full flex-col justify-between p-14">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-white ring-1 ring-white/20">
-              <Sparkles className="h-6 w-6" />
-            </span>
-            <span className="font-display text-xl font-bold tracking-tight text-white">
-              SmartBooks<span className="text-sky-400"> AI</span>
-            </span>
+          <Link href="/" aria-label="SmartBooks AI" className="inline-flex">
+            <BrandLogo size="auth" onDark priority />
           </Link>
 
           <div className="max-w-md">
@@ -79,13 +75,8 @@ export default function LoginPage() {
       {/* Right form panel */}
       <div className="flex w-full items-center justify-center bg-white px-5 py-14 dark:bg-navy-950 lg:w-1/2">
         <div className="w-full max-w-md">
-          <Link href="/" className="mb-10 flex items-center gap-3 lg:hidden">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-navy-800 text-white">
-              <Sparkles className="h-6 w-6" />
-            </span>
-            <span className="font-display text-xl font-bold tracking-tight text-navy-900 dark:text-white">
-              SmartBooks<span className="text-sky-500"> AI</span>
-            </span>
+          <Link href="/" aria-label="SmartBooks AI" className="mb-10 inline-flex lg:hidden">
+            <BrandLogo size="auth" />
           </Link>
 
           <h1 className="font-display text-3xl font-bold text-navy-900 dark:text-white sm:text-4xl">

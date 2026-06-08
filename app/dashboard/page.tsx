@@ -268,95 +268,103 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Compact executive filter bar */}
-      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-card dark:border-navy-800 dark:bg-navy-900 sm:px-5">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          {/* Segmented quick-period pills */}
-          <div className="-mx-1 overflow-x-auto">
-            <div
-              role="tablist"
-              aria-label="Quick period"
-              className="inline-flex min-w-max gap-1 rounded-xl bg-slate-100 p-1 dark:bg-navy-800"
-            >
-              {QUICK_PRESETS.map((p) => {
-                const active = activePreset === p.key;
-                return (
-                  <button
-                    key={p.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => handlePreset(p.key)}
-                    className={cn(
-                      "whitespace-nowrap rounded-lg px-3.5 py-2 text-base font-semibold transition-all duration-200",
-                      active
-                        ? "bg-navy-800 text-white shadow-sm dark:bg-sky-500"
-                        : "text-slate-600 hover:bg-white/70 hover:text-navy-900 dark:text-slate-300 dark:hover:bg-navy-700/60 dark:hover:text-white"
-                    )}
-                  >
-                    {t(p.labelKey)}
-                  </button>
-                );
-              })}
-            </div>
+      {/* Filter card - 2 clean rows */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card dark:border-navy-800 dark:bg-navy-900">
+        {/* Row 1: quick filter pills */}
+        <div className="-mx-1 overflow-x-auto">
+          <div
+            role="tablist"
+            aria-label="Quick period"
+            className="inline-flex min-w-max gap-2"
+          >
+            {QUICK_PRESETS.map((p) => {
+              const active = activePreset === p.key;
+              return (
+                <button
+                  key={p.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => handlePreset(p.key)}
+                  className={cn(
+                    "whitespace-nowrap rounded-lg px-4 py-2.5 text-base font-semibold transition-all duration-200",
+                    active
+                      ? "bg-navy-800 text-white shadow-sm ring-1 ring-navy-800/20 dark:bg-sky-500 dark:ring-sky-400/30"
+                      : "border border-slate-200 bg-white text-slate-700 hover:border-navy-300 hover:bg-slate-50 hover:text-navy-900 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white"
+                  )}
+                >
+                  {t(p.labelKey)}
+                </button>
+              );
+            })}
           </div>
+        </div>
 
-          {/* Custom date range + actions, grouped */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="hidden text-sm font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 xl:inline">
-              Custom range
-            </span>
-            <div className="flex flex-wrap items-center gap-2">
+        {/* Row 2: custom range label + dates + actions */}
+        <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-[auto_1fr_1fr] sm:items-end lg:max-w-xl">
+            <div className="hidden self-end pb-3 sm:block">
+              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                {t("custom_range")}
+              </p>
+            </div>
+            <div>
+              <label
+                htmlFor="dash-start"
+                className="mb-1.5 block text-sm font-semibold text-slate-600 dark:text-slate-300"
+              >
+                {t("start_date")}
+              </label>
               <input
                 id="dash-start"
                 type="date"
-                aria-label={t("start_date")}
                 value={pendingStart}
                 min={dataMin}
                 max={dataMax}
                 onChange={(e) => setPendingStart(e.target.value)}
-                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100 sm:w-40"
+                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100"
               />
-              <span
-                aria-hidden
-                className="hidden text-sm text-slate-400 sm:inline"
+            </div>
+            <div>
+              <label
+                htmlFor="dash-end"
+                className="mb-1.5 block text-sm font-semibold text-slate-600 dark:text-slate-300"
               >
-                -
-              </span>
+                {t("end_date")}
+              </label>
               <input
                 id="dash-end"
                 type="date"
-                aria-label={t("end_date")}
                 value={pendingEnd}
                 min={dataMin}
                 max={dataMax}
                 onChange={(e) => setPendingEnd(e.target.value)}
-                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100 sm:w-40"
+                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-navy-900 transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-navy-700 dark:bg-navy-950 dark:text-slate-100"
               />
             </div>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleClear}
-                className="h-11 rounded-lg border border-slate-200 px-4 text-base font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-navy-900 dark:border-navy-700 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white"
-              >
-                {t("clear")}
-              </button>
-              <button
-                type="button"
-                onClick={handleApply}
-                className="h-11 rounded-lg bg-navy-800 px-5 text-base font-semibold text-white shadow-sm transition hover:bg-navy-700"
-              >
-                {t("apply")}
-              </button>
-            </div>
+          </div>
+          <div className="flex gap-2 lg:self-end">
+            <button
+              type="button"
+              onClick={handleClear}
+              className="h-11 rounded-lg border border-slate-200 px-5 text-base font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-navy-900 dark:border-navy-700 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white"
+            >
+              {t("clear")}
+            </button>
+            <button
+              type="button"
+              onClick={handleApply}
+              className="h-11 rounded-lg bg-navy-800 px-6 text-base font-semibold text-white shadow-sm transition hover:bg-navy-700"
+            >
+              {t("apply_filter")}
+            </button>
           </div>
         </div>
 
         {filterError && (
           <div
             role="alert"
-            className="mt-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
+            className="mt-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
           >
             <AlertTriangle className="h-4 w-4 shrink-0" />
             {filterError}

@@ -1,5 +1,6 @@
 // app/page.tsx
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import {
   Sparkles,
   ScanLine,
@@ -68,14 +69,9 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white dark:bg-navy-950">
       {/* Nav */}
       <header className="sticky top-0 z-30 border-b border-slate-100 bg-white/80 backdrop-blur-md dark:border-navy-800 dark:bg-navy-950/80">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-10">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-navy-800 text-white">
-              <Sparkles className="h-6 w-6" />
-            </span>
-            <span className="font-display text-xl font-bold tracking-tight text-navy-900 dark:text-white">
-              SmartBooks<span className="text-sky-500"> AI</span>
-            </span>
+        <div className="mx-auto flex h-28 max-w-7xl items-center justify-between px-5 lg:px-10">
+          <Link href="/" aria-label="SmartBooks AI" className="inline-flex">
+            <BrandLogo size="header" priority />
           </Link>
           <nav className="hidden items-center gap-9 text-base font-medium text-slate-600 dark:text-slate-300 md:flex">
             <a href="#features" className="hover:text-navy-900 dark:hover:text-white">
@@ -298,13 +294,8 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-5 py-14 lg:px-10">
           <div className="grid gap-9 md:grid-cols-4">
             <div className="md:col-span-1">
-              <Link href="/" className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-navy-800 text-white">
-                  <Sparkles className="h-6 w-6" />
-                </span>
-                <span className="font-display text-xl font-bold tracking-tight text-navy-900 dark:text-white">
-                  SmartBooks<span className="text-sky-500"> AI</span>
-                </span>
+              <Link href="/" aria-label="SmartBooks AI" className="inline-flex">
+                <BrandLogo size="medium" />
               </Link>
               <p className="mt-4 text-base text-slate-500 dark:text-slate-400">
                 Smart accounting. Financial clarity for everyone, everywhere.
