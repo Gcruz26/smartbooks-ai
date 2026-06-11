@@ -1,7 +1,7 @@
 "use client";
 
 // app/users/page.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Users,
   ShieldCheck,
@@ -15,6 +15,7 @@ import {
   KeyRound,
   Pencil,
   CheckCircle2,
+  RotateCcw,
 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { StatCard } from "@/components/StatCard";
@@ -31,6 +32,9 @@ import {
   ALL_ROLES,
   ALL_FEATURES,
   featureLabels,
+  loadUsers,
+  saveUsers,
+  clearStoredUsers,
   type AppUser,
   type AppUserStatus,
   type UserRole,
@@ -69,7 +73,23 @@ const statusLabel: Record<AppUserStatus, string> = {
 };
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<AppUser[]>(seedUsers);
+  const [users, setUsersState] = useState<AppUser[]>(seedUsers);
+
+  // Hydrate from localStorage on mount.
+  useEffect(() => {
+    setUsersState(loadUsers());
+  }, []);
+
+  // Wrapper that always mirrors to localStorage.
+  const setUsers = (
+    next: AppUser[] | ((prev: AppUser[]) => AppUser[])
+  ) => {
+    setUsersState((prev) => {
+      const value = typeof next === "function" ? next(prev) : next;
+      saveUsers(value);
+      return value;
+    });
+  };
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingUser, setEditingUser] = useState<AppUser | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -107,6 +127,16 @@ export default function UsersPage() {
   function removeUser(id: string) {
     setUsers((prev) => prev.filter((u) => u.id !== id));
     flashSuccess("User removed.");
+  }
+
+  function resetDemoUsers() {
+    const ok = window.confirm(
+      "Reset the demo team to the original users? Any added or edited users will be lost."
+    );
+    if (!ok) return;
+    clearStoredUsers();
+    setUsersState(seedUsers);
+    flashSuccess("Demo users restored.");
   }
 
   /** Update a user from the Edit form. Mutates the mock currentUser too
@@ -174,15 +204,26 @@ export default function UsersPage() {
             {total} {total === 1 ? "user" : "users"} in this workspace
           </p>
         </div>
-        <Button
-          onClick={() => {
-            setEditingUser(null);
-            setShowAddForm((s) => !s);
-          }}
-        >
-          <UserPlus className="h-5 w-5" />
-          Add User
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={resetDemoUsers}
+            title="Restore the original demo team members"
+          >
+            <RotateCcw className="h-5 w-5" />
+            Reset Demo Users
+          </Button>
+          <Button
+            onClick={() => {
+              setEditingUser(null);
+              setShowAddForm((s) => !s);
+            }}
+          >
+            <UserPlus className="h-5 w-5" />
+            Add User
+          </Button>
+        </div>
       </div>
 
       {successMessage && (

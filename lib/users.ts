@@ -195,3 +195,40 @@ export const seedUsers: AppUser[] = [
     lastLogin: "Never",
   },
 ];
+
+/* ------------------------------------------------------------------ */
+/*  localStorage persistence                                            */
+/* ------------------------------------------------------------------ */
+
+export const USERS_STORAGE_KEY = "smartbooks_users";
+
+/** Hydrate the team-member list from localStorage; falls back to seeds. */
+export function loadUsers(): AppUser[] {
+  if (typeof window === "undefined") return seedUsers;
+  try {
+    const raw = window.localStorage.getItem(USERS_STORAGE_KEY);
+    if (!raw) return seedUsers;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return seedUsers;
+    return parsed as AppUser[];
+  } catch {
+    return seedUsers;
+  }
+}
+
+/** Persist the team-member list to localStorage. */
+export function saveUsers(users: AppUser[]): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+  } catch {
+    /* swallow quota errors in the demo */
+  }
+}
+
+/** Remove the stored list so the next read returns the seed users. */
+export function clearStoredUsers(): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(USERS_STORAGE_KEY);
+}
+
