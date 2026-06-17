@@ -26,6 +26,98 @@ export const translations = {
     slogan_login_b: "Financial clarity",
     slogan_login_c: "for everyone, everywhere.",
 
+    // Landing page
+    landing_nav_features: "Features",
+    landing_nav_market: "Who it's for",
+    landing_nav_pricing: "Pricing",
+    landing_log_in: "Log in",
+    landing_get_started: "Get Started",
+    landing_hero_badge: "Intelligent accounting, built for small business",
+    landing_hero_lead:
+      "SmartBooks AI brings smart accounting and financial clarity to small businesses, freelancers, and entrepreneurs - everyone, everywhere. Scan receipts, track income and expenses, and generate simple financial reports using intelligent technology.",
+    landing_view_pricing: "View Pricing",
+    landing_no_credit_card: "No credit card required - Free 14-day trial",
+    landing_smart_for: "Smart accounting for",
+
+    // Landing - Features section
+    landing_features_title: "Everything you need to run the books",
+    landing_features_subtitle:
+      "Powerful tools that feel simple - designed for people who'd rather run their business than do paperwork.",
+
+    // Landing - Who it's for
+    landing_who_title: "Built for businesses like yours",
+    landing_who_subtitle:
+      "Whatever you do, SmartBooks AI adapts to the way you work.",
+    landing_who_small_shops: "Small shops",
+    landing_who_restaurants: "Restaurants & cafes",
+    landing_who_freelancers: "Freelancers",
+    landing_who_beauty_salons: "Beauty salons",
+    landing_who_taxi_drivers: "Taxi drivers",
+    landing_who_online_sellers: "Online sellers",
+
+    // Landing - Pricing section
+    landing_pricing_title: "Simple, transparent pricing",
+    landing_pricing_subtitle:
+      "Start free, then pick the plan that grows with you.",
+    landing_compare_features: "Compare all features",
+    landing_most_popular: "Most Popular",
+    landing_per_month: "month",
+
+    landing_plan_basic_name: "Basic",
+    landing_plan_basic_desc: "Everything a solo freelancer needs to stay organized.",
+    landing_plan_basic_cta: "Start with Basic",
+    landing_plan_basic_f1: "Income and expense tracking",
+    landing_plan_basic_f2: "Receipt upload",
+    landing_plan_basic_f3: "Basic reports",
+    landing_plan_basic_f4: "Up to 50 transactions / month",
+    landing_plan_basic_f5: "Email support",
+
+    landing_plan_pro_name: "Pro",
+    landing_plan_pro_desc: "For growing businesses that want automation and insights.",
+    landing_plan_pro_cta: "Choose Pro",
+    landing_plan_pro_f1: "Automatic AI classification",
+    landing_plan_pro_f2: "Monthly financial reports",
+    landing_plan_pro_f3: "Tax deadline reminders",
+    landing_plan_pro_f4: "Digital document storage",
+    landing_plan_pro_f5: "Unlimited transactions",
+    landing_plan_pro_f6: "Priority support",
+
+    landing_plan_premium_name: "Premium",
+    landing_plan_premium_desc: "Full accounting support with a human in the loop.",
+    landing_plan_premium_cta: "Go Premium",
+    landing_plan_premium_f1: "All Pro features",
+    landing_plan_premium_f2: "Monthly accounting support",
+    landing_plan_premium_f3: "Advanced reports & forecasting",
+    landing_plan_premium_f4: "Business consulting support",
+    landing_plan_premium_f5: "Multi-user access",
+    landing_plan_premium_f6: "Dedicated account manager",
+
+    // Landing - Final CTA
+    landing_cta_title: "Ready to take control of your finances?",
+    landing_cta_subtitle:
+      "Join small businesses already saving hours every month with SmartBooks AI.",
+    landing_cta_button: "Get Started Free",
+    landing_cta_note: "No setup fees",
+
+    // Landing - Footer
+    footer_product: "Product",
+    footer_features: "Features",
+    footer_pricing: "Pricing",
+    footer_receipts: "Receipts",
+    footer_reports: "Reports",
+    footer_company: "Company",
+    footer_about: "About",
+    footer_careers: "Careers",
+    footer_blog: "Blog",
+    footer_contact: "Contact",
+    footer_legal: "Legal",
+    footer_privacy: "Privacy",
+    footer_terms: "Terms",
+    footer_security: "Security",
+    footer_cookies: "Cookies",
+    footer_rights: "(c) 2026 SmartBooks AI. All rights reserved.",
+    footer_tagline: "Made for small businesses everywhere.",
+
     // Sidebar sections
     section_overview: "Overview",
     section_finance: "Finance",
@@ -222,6 +314,98 @@ export const translations = {
     slogan_login_a: "Contabilidade inteligente.",
     slogan_login_b: "Clareza financeira",
     slogan_login_c: "para todos, em qualquer lugar.",
+
+    // Landing page
+    landing_nav_features: "Funcionalidades",
+    landing_nav_market: "Para quem e",
+    landing_nav_pricing: "Planos",
+    landing_log_in: "Entrar",
+    landing_get_started: "Comecar",
+    landing_hero_badge: "Contabilidade inteligente, criada para pequenos negocios",
+    landing_hero_lead:
+      "A SmartBooks AI traz contabilidade inteligente e clareza financeira para pequenas empresas, freelancers e empreendedores - todos, em qualquer lugar. Digitalize recibos, controle receitas e despesas e gere relatorios financeiros simples usando tecnologia inteligente.",
+    landing_view_pricing: "Ver Planos",
+    landing_no_credit_card: "Nao e necessario cartao de credito - Teste gratuito de 14 dias",
+    landing_smart_for: "Contabilidade inteligente para",
+
+    // Landing - Features section
+    landing_features_title: "Tudo o que precisa para gerir as contas",
+    landing_features_subtitle:
+      "Ferramentas poderosas que parecem simples - feitas para quem prefere gerir o negocio em vez de papelada.",
+
+    // Landing - Who it's for
+    landing_who_title: "Criado para negocios como o seu",
+    landing_who_subtitle:
+      "Seja qual for a sua atividade, a SmartBooks AI adapta-se a forma como trabalha.",
+    landing_who_small_shops: "Pequenas lojas",
+    landing_who_restaurants: "Restaurantes e cafes",
+    landing_who_freelancers: "Freelancers",
+    landing_who_beauty_salons: "Saloes de beleza",
+    landing_who_taxi_drivers: "Taxistas",
+    landing_who_online_sellers: "Vendedores online",
+
+    // Landing - Pricing section
+    landing_pricing_title: "Planos simples e transparentes",
+    landing_pricing_subtitle:
+      "Comece gratuitamente e escolha o plano que cresce consigo.",
+    landing_compare_features: "Comparar todas as funcionalidades",
+    landing_most_popular: "Mais Popular",
+    landing_per_month: "mes",
+
+    landing_plan_basic_name: "Basico",
+    landing_plan_basic_desc: "Tudo o que um freelancer precisa para se manter organizado.",
+    landing_plan_basic_cta: "Comecar com o Basico",
+    landing_plan_basic_f1: "Controlo de receitas e despesas",
+    landing_plan_basic_f2: "Upload de recibos",
+    landing_plan_basic_f3: "Relatorios basicos",
+    landing_plan_basic_f4: "Ate 50 transacoes / mes",
+    landing_plan_basic_f5: "Suporte por email",
+
+    landing_plan_pro_name: "Pro",
+    landing_plan_pro_desc: "Para negocios em crescimento que procuram automacao e insights.",
+    landing_plan_pro_cta: "Escolher Pro",
+    landing_plan_pro_f1: "Classificacao automatica com IA",
+    landing_plan_pro_f2: "Relatorios financeiros mensais",
+    landing_plan_pro_f3: "Lembretes de prazos fiscais",
+    landing_plan_pro_f4: "Arquivo digital de documentos",
+    landing_plan_pro_f5: "Transacoes ilimitadas",
+    landing_plan_pro_f6: "Suporte prioritario",
+
+    landing_plan_premium_name: "Premium",
+    landing_plan_premium_desc: "Apoio contabilistico completo com acompanhamento humano.",
+    landing_plan_premium_cta: "Escolher Premium",
+    landing_plan_premium_f1: "Todas as funcionalidades do Pro",
+    landing_plan_premium_f2: "Apoio contabilistico mensal",
+    landing_plan_premium_f3: "Relatorios avancados e previsoes",
+    landing_plan_premium_f4: "Apoio de consultoria empresarial",
+    landing_plan_premium_f5: "Acesso multiutilizador",
+    landing_plan_premium_f6: "Gestor de conta dedicado",
+
+    // Landing - Final CTA
+    landing_cta_title: "Pronto para assumir o controlo das suas financas?",
+    landing_cta_subtitle:
+      "Junte-se a pequenas empresas que ja estao a poupar horas todos os meses com a SmartBooks AI.",
+    landing_cta_button: "Comecar Gratuitamente",
+    landing_cta_note: "Sem taxas de adesao",
+
+    // Landing - Footer
+    footer_product: "Produto",
+    footer_features: "Funcionalidades",
+    footer_pricing: "Planos",
+    footer_receipts: "Recibos",
+    footer_reports: "Relatorios",
+    footer_company: "Empresa",
+    footer_about: "Sobre",
+    footer_careers: "Carreiras",
+    footer_blog: "Blog",
+    footer_contact: "Contacto",
+    footer_legal: "Legal",
+    footer_privacy: "Privacidade",
+    footer_terms: "Termos",
+    footer_security: "Seguranca",
+    footer_cookies: "Cookies",
+    footer_rights: "(c) 2026 SmartBooks AI. Todos os direitos reservados.",
+    footer_tagline: "Feito para pequenas empresas em todo o lado.",
 
     // Sidebar sections
     section_overview: "Visao Geral",
